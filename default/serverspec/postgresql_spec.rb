@@ -37,9 +37,21 @@ hba_config_file = "/etc/postgresql/#{postgres_version}/main/pg_hba.conf"
 postgres_config_file = "/etc/postgresql/#{postgres_version}/main/postgresql.conf" 
 
 
+# Req. 1: no unstable version
+describe command("sudo -i psql -V") do
+  its(:stdout) { should_not match(/RC/) }
+  its(:stdout) { should_not match(/DEVEL/) }
+  its(:stdout) { should_not match(/BETA/) }
+end
+
+# Req. 4: only one instance
+describe command("ps aux | grep postgresql.conf | grep -v grep | wc -l") do
+  its(:stdout) { should match(/^1/) }
+end
+  
 describe 'Checking Postgres-databases for risky entries' do
   
-  # Req. 15: trusted languages
+  # Req. 15, 16: trusted languages
   describe command("sudo -i psql -d postgres -c \"SELECT count (*) FROM pg_language WHERE lanpltrusted = 'f' AND lanname!='internal' AND lanname!='c';\" | tail -n3 | head -n1 | tr -d ' '") do
     its(:stdout) { should match(/^0/) }
   end
@@ -54,9 +66,19 @@ describe 'Checking Postgres-databases for risky entries' do
     its(:stdout) { should match(/^0/) }
   end                  
 
+  # Req. 8: only one superuser
+  describe command("sudo -i psql -d postgres -c \"SELECT rolname,rolsuper,rolcreaterole,rolcreatedb FROM pg_roles WHERE rolsuper IS TRUE OR rolcreaterole IS TRUE or rolcreatedb IS TRUE;\ | tail -n+3 | head -n-2 | wc -l") do
+    its(:stdout) { should match(/^1/) }
+  end
+  
+  # Req. 9: check #pg_authids
+  describe command("sudo -i psql -d postgres -c \"\\dp pg_catalog.pg_authid\" | grep pg_catalog | wc -l") do
+    its(:stdout) { should match(/^1/) }
+  end  
+
 end
 
-
+# Req. 17 - check filepermissions
 describe 'Req. 17: Postgres FS-permissions' do
 	
   describe command("find #{postgres_home} -user #{user_name} -group #{user_name} -perm /go=rwx | wc -l") do
@@ -83,8 +105,8 @@ describe 'Parsing configfiles' do
     its(:content) { should match_key_value('password_encryption', 'on') }
   end 
                   
-  # Req. 6: MD5 for ALL connections/users
-  describe 'require MD5 for ALL users in pg_hba.conf' do
+  # Req. 6,7: MD5 for ALL connections/users
+  describe 'require MD5 for ALL users, peers in pg_hba.conf' do
                   
     describe command("sudo -i cat #{hba_config_file} | grep ' all' | sed 's/  \\+/ /g' | grep 'local all all md5' -c") do
       its(:stdout) { should match(/^1/) }
@@ -97,10 +119,32 @@ describe 'Parsing configfiles' do
     describe command("sudo -i cat #{hba_config_file} | grep ' all' | sed 's/  \\+/ /g' | grep 'host all all ::1/128 md5' -c") do
       its(:stdout) { should match(/^1/) }
     end
+	
+	# Req. 7,11,20 - no "trust"-auth
+    describe command("sudo -i cat #{hba_config_file} | egrep 'peer|trust|password|ident|crypt' | wc -l") do
+      its(:stdout) { should match(/^0/) }
+    end	
+	
   end
-                  
+      
+  # Req. 6: password_encryption must be "on"
   describe file(postgres_config_file) do
     its(:content) { should match_key_value('password_encryption', 'on') }
   end                   
-                  
+
+  # Req. 21: System Monitoring
+  describe 'System Monitoring' do
+    
+    describe file(postgres_config_file) do
+      its(:content) { should match_key_value('logging_collector', 'on') }
+	  its(:content) { should match_key_value('log_directory', 'pg_log') }
+	  its(:content) { should match_key_value('log_connections', 'on') }
+	  its(:content) { should match_key_value('log_disconnections', 'on') }
+	  its(:content) { should match_key_value('log_duration', 'on') }
+	  its(:content) { should match_key_value('log_hostname', 'on') }
+	  its(:content) { should match_key_value('log_line_prefix', "'%t %u %d %h'") }
+    end 
+	
+  end
+  
 end
