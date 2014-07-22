@@ -79,8 +79,8 @@ end
 
 # Req. 17 - check filepermissions
 describe 'Req. 17: Postgres FS-permissions' do
-	
-  describe command("find #{postgres_home} -user #{user_name} -group #{user_name} -perm /go=rwx | wc -l") do
+
+  describe command("sudo find #{postgres_home} -user #{user_name} -group #{user_name} -perm /go=rwx | wc -l") do
     its(:stdout) { should match(/^0/) }
   end
 
