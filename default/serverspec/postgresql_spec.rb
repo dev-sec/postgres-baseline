@@ -124,11 +124,6 @@ describe 'Parsing configfiles' do
     end
 
   end
-      
-  # Req. 6: password_encryption must be "on"
-  describe file(postgres_config_file) do
-    its(:content) { should match_key_value('password_encryption', 'on') }
-  end                   
 
   # Req. 21: System Monitoring
   describe 'System Monitoring' do
