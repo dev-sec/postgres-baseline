@@ -106,16 +106,16 @@ describe 'Parsing configfiles' do
   # Req. 6,7: MD5 for ALL connections/users
   describe 'require MD5 for ALL users, peers in pg_hba.conf' do
 
-    describe command("sudo -i cat #{hba_config_file} | grep ' all' | sed 's/  \\+/ /g' | grep 'local all all md5' -c") do
-      its(:stdout) { should match(/^1/) }
+    describe file(hba_config_file) do
+      its(:content) { should match(/local\s.*?all\s.*?all\s.*?md5/) }
     end
 
-    describe command("sudo -i cat #{hba_config_file} | grep ' all' | sed 's/  \\+/ /g' | grep 'host all all 127.0.0.1/32 md5' -c") do
-      its(:stdout) { should match(/^1/) }
+    describe file(hba_config_file) do
+      its(:content) { should match(/host\s.*?all\s.*?all\s.*?127.0.0.1\/32\s.*?md5/) }
     end
 
-    describe command("sudo -i cat #{hba_config_file} | grep ' all' | sed 's/  \\+/ /g' | grep 'host all all ::1/128 md5' -c") do
-      its(:stdout) { should match(/^1/) }
+    describe file(hba_config_file) do
+      its(:content) { should match(/host\s.*?all\s.*?all\s.*?::1\/128\s.*?md5/) }
     end
 
     # Req. 7,11,20 - no "trust"-auth
