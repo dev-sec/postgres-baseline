@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-ENV['posgresql_password'] = 'iloverandompasswordsbutthiswilldo'
+ENV['PGPASSWORD'] = 'iloverandompasswordsbutthiswilldo'
 
 RSpec.configure do |c|
   c.filter_run_excluding skipOn: backend(Serverspec::Commands::Base).check_os[:family]
@@ -35,6 +35,7 @@ ret = backend.run_command('ls /etc/postgresql')
 postgres_version = ret[:stdout].chomp
 hba_config_file = "/etc/postgresql/#{postgres_version}/main/pg_hba.conf"
 postgres_config_file = "/etc/postgresql/#{postgres_version}/main/postgresql.conf"
+psql_command = "sudo -u postgres -i PGPASSWORD='#{ENV['PGPASSWORD']}' psql"
 
 # Req. 1: no unstable version
 describe command('sudo -i psql -V') do
@@ -51,27 +52,27 @@ end
 describe 'Checking Postgres-databases for risky entries' do
 
   # Req. 15, 16: trusted languages
-  describe command("sudo -u postgres -i psql -d postgres -c \"SELECT count (*) FROM pg_language WHERE lanpltrusted = 'f' AND lanname!='internal' AND lanname!='c';\" | tail -n3 | head -n1 | tr -d ' '") do
+  describe command("#{psql_command} -d postgres -c \"SELECT count (*) FROM pg_language WHERE lanpltrusted = 'f' AND lanname!='internal' AND lanname!='c';\" | tail -n3 | head -n1 | tr -d ' '") do
     its(:stdout) { should match(/^0/) }
   end
 
   # Req. 5: no empty passwords
-  describe command("sudo -u postgres -i psql -d postgres -c \"SELECT * FROM pg_shadow WHERE passwd IS NULL;\" | tail -n2 | head -n1 | cut -d '(' -f2 | cut -d ' ' -f1") do
+  describe command("#{psql_command} -d postgres -c \"SELECT * FROM pg_shadow WHERE passwd IS NULL;\" | tail -n2 | head -n1 | cut -d '(' -f2 | cut -d ' ' -f1") do
     its(:stdout) { should match(/^0/) }
   end
 
   # Req. 6: MD5-hash
-  describe command("sudo -u postgres -i psql -d postgres -c \"SELECT passwd FROM pg_shadow;\" | tail -n+3 | head -n-2 | grep -v \"md5\" -c") do
+  describe command("#{psql_command} -d psql -d postgres -c \"SELECT passwd FROM pg_shadow;\" | tail -n+3 | head -n-2 | grep -v \"md5\" -c") do
     its(:stdout) { should match(/^0/) }
   end
 
   # Req. 8: only one superuser
-  describe command("sudo -u postgres -i psql -d postgres -c \"SELECT rolname,rolsuper,rolcreaterole,rolcreatedb FROM pg_roles WHERE rolsuper IS TRUE OR rolcreaterole IS TRUE or rolcreatedb IS TRUE;\" | tail -n+3 | head -n-2 | wc -l") do
+  describe command("#{psql_command} -d postgres -c \"SELECT rolname,rolsuper,rolcreaterole,rolcreatedb FROM pg_roles WHERE rolsuper IS TRUE OR rolcreaterole IS TRUE or rolcreatedb IS TRUE;\" | tail -n+3 | head -n-2 | wc -l") do
     its(:stdout) { should match(/^1/) }
   end
 
   # Req. 9: check #pg_authids
-  describe command("sudo -u postgres -i psql -d postgres -c \"\\dp pg_catalog.pg_authid\" | grep pg_catalog | wc -l") do
+  describe command("#{psql_command} -d postgres -c \"\\dp pg_catalog.pg_authid\" | grep pg_catalog | wc -l") do
     its(:stdout) { should match(/^1/) }
   end
 
