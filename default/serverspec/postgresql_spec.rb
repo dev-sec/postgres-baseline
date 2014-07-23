@@ -119,7 +119,13 @@ describe 'Parsing configfiles' do
     end
 
     # Req. 7,11,20 - no "trust"-auth
-    describe command("sudo -i cat #{hba_config_file} | egrep 'peer|trust|password|ident|crypt' | wc -l") do
+    # We accept one peer and one ident for now (chef automation)
+
+    describe command("sudo -i cat #{hba_config_file} | egrep 'peer|ident' | wc -l") do
+      its(:stdout) { should match(/^2/) }
+    end
+
+    describe command("sudo -i cat #{hba_config_file} | egrep 'trust|password|crypt' | wc -l") do
       its(:stdout) { should match(/^0/) }
     end
 
