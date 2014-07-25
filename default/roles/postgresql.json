@@ -1,0 +1,20 @@
+{
+    "name": "postgresql",
+    "default_attributes": { },
+    "override_attributes": { },
+    "json_class": "Chef::Role",
+    "description": "Postgresql Hardened Server Test Role",
+    "chef_type": "role",
+    "default_attributes" : {
+      "postgresql": {
+        "password": {
+          "postgres" : "iloverandompasswordsbutthiswilldo"
+        }
+      }
+    },
+    "run_list": [
+        "recipe[chef-solo-search]",
+        "recipe[apt]",
+        "recipe[postgres-hardening::server]"
+    ]
+}
