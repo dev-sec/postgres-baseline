@@ -123,7 +123,7 @@ describe 'Parsing configfiles' do
     # We accept one peer and one ident for now (chef automation)
 
     describe command("sudo -i cat #{hba_config_file} | egrep 'peer|ident' | wc -l") do
-      its(:stdout) { should match(/^2/) }
+      its(:stdout) { should match(/^[2|1]/) }
     end
 
     describe command("sudo -i cat #{hba_config_file} | egrep 'trust|password|crypt' | wc -l") do
