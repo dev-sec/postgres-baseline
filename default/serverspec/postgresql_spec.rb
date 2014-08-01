@@ -16,12 +16,19 @@ end
 
 # set OS-dependent filenames and paths
 case backend.check_os[:family]
-when 'Ubuntu'
-  service_name = 'postgresql'
+when 'Ubuntu', 'Debian'
   postgres_home = '/var/lib/postgresql'
+  family = 'ubuntu'
+  service_name = 'postgresql'
+  task_name = 'postgresql.conf'
   user_name = 'postgres'
-when 'RedHat', 'Fedora'
-  service_name = 'postgres'
+#when 'RedHat', 'Fedora', 'CentOS'
+else
+  postgres_home = '/var/lib/postgresql'
+  family = 'redhat'
+  service_name = 'postgresql'
+  task_name = 'postmaster'
+  user_name = 'postgres'
 end
 
 describe service("#{service_name}") do
@@ -29,12 +36,22 @@ describe service("#{service_name}") do
   it { should be_running }
 end
 
+# puppet or chef?
+ret = backend.run_command('[ -d /etc/puppet ] && echo "1"')
+is_puppet = ret[:stdout].chomp
+
 # find configfiles
 # even better: psql -t -d postgres -P format=unaligned -c "show hba_file"
-ret = backend.run_command('ls /etc/postgresql')
-postgres_version = ret[:stdout].chomp
-hba_config_file = "/etc/postgresql/#{postgres_version}/main/pg_hba.conf"
-postgres_config_file = "/etc/postgresql/#{postgres_version}/main/postgresql.conf"
+if is_puppet == "1" and family == "redhat" then
+  config_path = "/var/lib/pgsql/data"
+else
+  ret = backend.run_command('ls /etc/postgresql/')
+  postgres_version = ret[:stdout].chomp
+  config_path = "/etc/postgresql/#{postgres_version}/main"
+end
+
+hba_config_file = "#{config_path}/pg_hba.conf"
+postgres_config_file = "#{config_path}/postgresql.conf"
 psql_command = "sudo -u postgres -i PGPASSWORD='#{ENV['PGPASSWORD']}' psql"
 
 # Req. 1: no unstable version
@@ -45,7 +62,7 @@ describe command('sudo -i psql -V') do
 end
 
 # Req. 4: only one instance
-describe command('ps aux | grep postgresql.conf | grep -v grep | wc -l') do
+describe command("ps aux | grep #{task_name} | grep -v grep | wc -l") do
   its(:stdout) { should match(/^1/) }
 end
 
