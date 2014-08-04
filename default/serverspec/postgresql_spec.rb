@@ -18,36 +18,24 @@ end
 case backend.check_os[:family]
 when 'Ubuntu', 'Debian'
   postgres_home = '/var/lib/postgresql'
-  family = 'ubuntu'
   service_name = 'postgresql'
   task_name = 'postgresql.conf'
   user_name = 'postgres'
-#when 'RedHat', 'Fedora', 'CentOS'
+  ret = backend.run_command('ls /etc/postgresql/')
+  postgres_version = ret[:stdout].chomp
+  config_path = "/etc/postgresql/#{postgres_version}/main"
+
 else
   postgres_home = '/var/lib/postgresql'
-  family = 'redhat'
   service_name = 'postgresql'
   task_name = 'postmaster'
   user_name = 'postgres'
+  config_path = '/var/lib/pgsql/data'
 end
 
 describe service("#{service_name}") do
   it { should be_enabled }
   it { should be_running }
-end
-
-# puppet or chef?
-ret = backend.run_command('[ -d /etc/puppet ] && echo "1"')
-is_puppet = ret[:stdout].chomp
-
-# find configfiles
-# even better: psql -t -d postgres -P format=unaligned -c "show hba_file"
-if is_puppet == "1" and family == "redhat" then
-  config_path = "/var/lib/pgsql/data"
-else
-  ret = backend.run_command('ls /etc/postgresql/')
-  postgres_version = ret[:stdout].chomp
-  config_path = "/etc/postgresql/#{postgres_version}/main"
 end
 
 hba_config_file = "#{config_path}/pg_hba.conf"
