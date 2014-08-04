@@ -154,7 +154,7 @@ describe 'Parsing configfiles' do
 
     describe file(postgres_config_file) do
       its(:content) { should match_key_value('logging_collector', 'on') }
-      its(:content) { should match_key_value('log_directory', 'pg_log') }
+      its(:content) { should match(/log_directory\s.*?pg_log/) } # match pg_log and 'pg_log'
       its(:content) { should match_key_value('log_connections', 'on') }
       its(:content) { should match_key_value('log_disconnections', 'on') }
       its(:content) { should match_key_value('log_duration', 'on') }
