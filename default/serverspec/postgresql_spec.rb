@@ -94,12 +94,11 @@ end
 
 describe 'Parsing configfiles' do
 
-  # Fix this for redhat plattforms and enable it again
-  #  # Req. 19: ssl = on
-  #  describe file(postgres_config_file) do
-  #    its(:content) { should match_key_value('ssl', 'on') }
-  #  end
-  #
+  # Req. 19: ssl = on is out of scope as it requires ssl certificate handling
+
+  describe file(postgres_config_file) do
+    its(:content) { should match_key_value('ssl', 'off') }
+  end
 
   # Req. 19: ssl_ciphers = 'ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH'
   describe file(postgres_config_file) do
