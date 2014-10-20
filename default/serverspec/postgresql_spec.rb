@@ -12,7 +12,7 @@ end
 
 # set OS-dependent filenames and paths
 case os[:family]
-when 'debian'
+when 'ubuntu', 'debian'
   postgres_home = '/var/lib/postgresql'
   service_name = 'postgresql'
   task_name = 'postgresql.conf'
