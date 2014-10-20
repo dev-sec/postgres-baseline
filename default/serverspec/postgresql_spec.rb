@@ -4,10 +4,6 @@ require 'spec_helper'
 
 ENV['PGPASSWORD'] = 'iloverandompasswordsbutthiswilldo'
 
-RSpec.configure do |c|
-  c.filter_run_excluding skipOn: backend(Serverspec::Commands::Base).check_os[:family]
-end
-
 RSpec::Matchers.define :match_key_value do |key, value|
   match do |actual|
     actual =~ /^\s*?#{key}\s*?=\s*?#{value}/
@@ -15,8 +11,8 @@ RSpec::Matchers.define :match_key_value do |key, value|
 end
 
 # set OS-dependent filenames and paths
-case backend.check_os[:family]
-when 'Ubuntu', 'Debian'
+case os[:family]
+when 'ubuntu', 'debian'
   postgres_home = '/var/lib/postgresql'
   service_name = 'postgresql'
   task_name = 'postgresql.conf'
