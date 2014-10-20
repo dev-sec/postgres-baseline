@@ -11,8 +11,8 @@ RSpec::Matchers.define :match_key_value do |key, value|
 end
 
 # set OS-dependent filenames and paths
-case backend.check_os[:family]
-when 'Ubuntu', 'Debian'
+case os[:family]
+when 'debian'
   postgres_home = '/var/lib/postgresql'
   service_name = 'postgresql'
   task_name = 'postgresql.conf'
