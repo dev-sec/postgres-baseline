@@ -17,8 +17,7 @@ when 'ubuntu', 'debian'
   service_name = 'postgresql'
   task_name = 'postgresql.conf'
   user_name = 'postgres'
-  ret = backend.run_command('ls /etc/postgresql/')
-  postgres_version = ret[:stdout].chomp
+  postgres_version = command('ls /etc/postgresql/').stdout.chomp
   config_path = "/etc/postgresql/#{postgres_version}/main"
 
 else
