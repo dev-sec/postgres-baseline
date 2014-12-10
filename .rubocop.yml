@@ -3,6 +3,7 @@ AllCops:
   Exclude:
   - vendor/**/*
   - "*/puppet/Puppetfile"
+  - 'default/puppet/.tmp/**/*'
 Documentation:
   Enabled: false
 AlignParameters:
