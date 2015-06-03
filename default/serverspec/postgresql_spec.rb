@@ -112,11 +112,11 @@ describe 'Parsing configfiles' do
     end
 
     describe file(hba_config_file) do
-      its(:content) { should match(/host\s.*?all\s.*?all\s.*?127.0.0.1\/32\s.*?md5/) }
+      its(:content) { should match(%r{/host\s.*?all\s.*?all\s.*?127.0.0.1\/32\s.*?md5/}) }
     end
 
     describe file(hba_config_file) do
-      its(:content) { should match(/host\s.*?all\s.*?all\s.*?::1\/128\s.*?md5/) }
+      its(:content) { should match(%r{/host\s.*?all\s.*?all\s.*?::1\/128\s.*?md5/}) }
     end
 
     # DTAG SEC: 3.60-7,11,20 - no "trust"-auth
