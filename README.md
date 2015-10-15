@@ -3,8 +3,8 @@ tests-postgres-hardening
 
 This are the integration tests for the projects
 
-- https://github.com/TelekomLabs/puppet-postgres-hardening
-- https://github.com/TelekomLabs/chef-postgres-hardening
+- https://github.com/hardening-io/puppet-postgres-hardening
+- https://github.com/hardening-io/chef-postgres-hardening
 
 they start at `integration` level
 
