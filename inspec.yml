@@ -1,0 +1,10 @@
+name: postgres-hardening
+title: Hardening Framework Apache Hardening Test Suite
+maintainer: Hardening Framework Team
+copyright: Hardening Framework Team
+copyright_email: hello@dev-sec.io
+license: Apache 2 license
+summary: Test-suite for best-practice postgres hardening
+version: 0.1.0
+supports:
+- os-family: unix
