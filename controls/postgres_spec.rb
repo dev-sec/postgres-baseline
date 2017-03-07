@@ -66,10 +66,37 @@ control 'postgres-01' do
   impact 1.0
   title 'Postgresql should be running'
   desc 'Postgresql should be running.'
-  describe service(postgres.service) do
-    it { should be_installed }
-    it { should be_running }
-    it { should be_enabled }
+  case os[:name]
+  when 'ubuntu'
+    case os[:release]
+    when '12.04'
+      describe service(postgres.service) do
+        it { should be_installed }
+        it { should be_running }
+        it { should be_enabled }
+      end
+    when '16.04'
+      describe systemd_service(postgres.service) do
+        it { should be_installed }
+        it { should be_running }
+        it { should be_enabled }
+      end
+    end
+  when 'redhat', 'centos', 'oracle'
+    case os[:release]
+    when /6\./
+      describe runit_service(postgres.service) do
+        it { should be_installed }
+        it { should be_running }
+        it { should be_enabled }
+      end
+    when /7\./
+      describe systemd_service(postgres.service) do
+        it { should be_installed }
+        it { should be_running }
+        it { should be_enabled }
+      end
+    end
   end
 end
 
@@ -91,8 +118,14 @@ control 'postgres-03' do
   impact 1.0
   title 'Run one postgresql instance per operating system'
   desc 'Only one postgresql database instance must be running on an operating system instance (both physical HW or virtualized).'
-  describe command('ps aux | grep \'postgres -D\' | grep -v grep | wc -l') do
-    its('stdout') { should match(/^1/) }
+  if os[:family] == 'debian'
+    describe processes('postgres') do
+      its('list.length') { should eq 1 }
+    end
+  elsif os[:family] == 'redhat'
+    describe processes('postmaster') do
+      its('list.length') { should eq 1 }
+    end
   end
 end
 
@@ -162,14 +195,14 @@ control 'postgres-10' do
     it { should be_directory }
     it { should be_owned_by USER }
     it { should be_readable.by('owner') }
-    it { should be_readable.by('group') }
-    it { should be_readable.by('other') }
+    it { should_not be_readable.by('group') }
+    it { should_not be_readable.by('other') }
     it { should be_writable.by('owner') }
     it { should_not be_writable.by('group') }
     it { should_not be_writable.by('other') }
     it { should be_executable.by('owner') }
-    it { should be_executable.by('group') }
-    it { should be_executable.by('other') }
+    it { should_not be_executable.by('group') }
+    it { should_not be_executable.by('other') }
   end
   describe file(POSTGRES_CONF_PATH) do
     it { should be_file }
