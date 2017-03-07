@@ -77,10 +77,10 @@ control 'postgres-02' do
   impact 1.0
   title 'Use stable postgresql version'
   desc 'Use only community or commercially supported version of the PostgreSQL software. Do not use RC, DEVEL oder BETA versions in a production environment.'
-  describe command('sudo -i psql -V') do
+  describe command('psql -V') do
     its('stdout') { should match(/9.[2-5]/) }
   end
-  describe command('sudo -i psql -V') do
+  describe command('psql -V') do
     its('stdout') { should_not match(/RC/) }
     its('stdout') { should_not match(/DEVEL/) }
     its('stdout') { should_not match(/BETA/) }
@@ -235,16 +235,7 @@ control 'postgres-14' do
   impact 1.0
   title 'We accept one peer and one ident for now (chef automation)'
   desc 'We accept one peer and one ident for now (chef automation)'
-  describe command('sudo -i cat ' + POSTGRES_HBA_CONF_FILE + ' | egrep \'peer|ident\' | wc -l') do
-    its('stdout') { should match(/^[2|1]/) }
-  end
-end
-
-control 'postgres-14' do
-  impact 1.0
-  title 'We accept one peer and one ident for now (chef automation)'
-  desc 'We accept one peer and one ident for now (chef automation)'
-  describe command('sudo -i cat ' + POSTGRES_HBA_CONF_FILE + ' | egrep \'peer|ident\' | wc -l') do
+  describe command('cat ' + POSTGRES_HBA_CONF_FILE + ' | egrep \'peer|ident\' | wc -l') do
     its('stdout') { should match(/^[2|1]/) }
   end
 end
