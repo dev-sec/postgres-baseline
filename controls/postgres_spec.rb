@@ -66,10 +66,47 @@ control 'postgres-01' do
   impact 1.0
   title 'Postgresql should be running'
   desc 'Postgresql should be running.'
-  describe service(postgres.service) do
-    it { should be_installed }
-    it { should be_running }
-    it { should be_enabled }
+  # describe service(postgres.service) do
+  #   it { should be_installed }
+  #   it { should be_running }
+  #   it { should be_enabled }
+  # end
+  case os[:name]
+  when 'ubuntu'
+    case os[:release]
+    when '12.04'
+      describe command('/etc/init.d/postgresql status') do
+        its('stdout') { should include 'online' }
+      end
+    when '14.04'
+      describe command('service postgresql status') do
+        its('stdout') { should include 'online' }
+      end
+    when '16.04'
+      describe systemd_service(postgres.service) do
+        it { should be_installed }
+        it { should be_running }
+        it { should be_enabled }
+      end
+    end
+  when 'debian'
+    case os[:release]
+    when /7\./
+      describe command('/etc/init.d/postgresql status') do
+        its('stdout') { should include 'Running' }
+      end
+    end
+  when 'redhat', 'centos', 'oracle', 'fedora'
+    case os[:release]
+    when /6\./
+      describe command('/etc/init.d/postgresql-9.4 status') do
+        its('stdout') { should include 'running' }
+      end
+    when /7\./
+      describe command('ps aux | awk /\'bin\/postgres\'/ | wc -l') do
+        its('stdout') { should include '1' }
+      end
+    end
   end
 end
 
@@ -78,7 +115,7 @@ control 'postgres-02' do
   title 'Use stable postgresql version'
   desc 'Use only community or commercially supported version of the PostgreSQL software. Do not use RC, DEVEL oder BETA versions in a production environment.'
   describe command('psql -V') do
-    its('stdout') { should match(/9.[2-5]/) }
+    its('stdout') { should match(/9.[1-5]/) }
   end
   describe command('psql -V') do
     its('stdout') { should_not match(/RC/) }
@@ -91,8 +128,10 @@ control 'postgres-03' do
   impact 1.0
   title 'Run one postgresql instance per operating system'
   desc 'Only one postgresql database instance must be running on an operating system instance (both physical HW or virtualized).'
-  describe command('ps aux | grep \'postgres -D\' | grep -v grep | wc -l') do
-    its('stdout') { should match(/^1/) }
+  pg_command = 'postgres'
+  pg_command = 'postmaster' if os.redhat? && os.release.include?('6.')
+  describe processes(pg_command) do
+    its('list.length') { should eq 1 }
   end
 end
 
@@ -162,14 +201,14 @@ control 'postgres-10' do
     it { should be_directory }
     it { should be_owned_by USER }
     it { should be_readable.by('owner') }
-    it { should be_readable.by('group') }
-    it { should be_readable.by('other') }
+    it { should_not be_readable.by('group') }
+    it { should_not be_readable.by('other') }
     it { should be_writable.by('owner') }
     it { should_not be_writable.by('group') }
     it { should_not be_writable.by('other') }
     it { should be_executable.by('owner') }
-    it { should be_executable.by('group') }
-    it { should be_executable.by('other') }
+    it { should_not be_executable.by('group') }
+    it { should_not be_executable.by('other') }
   end
   describe file(POSTGRES_CONF_PATH) do
     it { should be_file }
