@@ -1,7 +1,7 @@
 name: postgres-baseline
 title: Hardening Framework Postgres Hardening Test Suite
-maintainer: Hardening Framework Team
-copyright: Hardening Framework Team
+maintainer: DevSec Hardening Framework Team
+copyright: DevSec Hardening Framework Team
 copyright_email: hello@dev-sec.io
 license: Apache 2 license
 summary: Test-suite for best-practice postgres hardening
