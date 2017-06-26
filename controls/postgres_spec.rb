@@ -55,7 +55,7 @@ POSTGRES_CONF_PATH = attribute(
 POSTGRES_HBA_CONF_FILE = attribute(
   'postgres_hba_conf_file',
   description: 'define path for the postgresql configuration file',
-  default: postgres.conf_dir + '/pg_hba.conf'
+  default: File.join(postgres.conf_dir.to_s, 'pg_hba.conf')
 )
 
 only_if do
@@ -187,7 +187,7 @@ control 'postgres-09' do
   impact 1.0
   title 'The PostgreSQL "data_directory" should be assigned exclusively to the database account (such as "postgres").'
   desc 'If file permissions on data are not property defined, other users may read, modify or delete those files.'
-  find_command = 'find ' + POSTGRES_DATA + ' -user ' + USER + ' -group ' + USER + ' -perm /go=rwx'
+  find_command = 'find ' + POSTGRES_DATA.to_s + ' -user ' + USER + ' -group ' + USER + ' -perm /go=rwx'
   describe command(find_command) do
     its('stdout') { should eq '' }
   end
@@ -274,7 +274,7 @@ control 'postgres-14' do
   impact 1.0
   title 'We accept one peer and one ident for now (chef automation)'
   desc 'We accept one peer and one ident for now (chef automation)'
-  describe command('cat ' + POSTGRES_HBA_CONF_FILE + ' | egrep \'peer|ident\' | wc -l') do
+  describe command('cat ' + POSTGRES_HBA_CONF_FILE.to_s + ' | egrep \'peer|ident\' | wc -l') do
     its('stdout') { should match(/^[2|1]/) }
   end
 end
