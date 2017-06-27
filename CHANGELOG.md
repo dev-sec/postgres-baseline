@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.0.2](https://github.com/dev-sec/postgres-baseline/tree/2.0.2) (2017-06-27)
+[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.1...2.0.2)
+
+**Merged pull requests:**
+
+- inspec check fix [\#21](https://github.com/dev-sec/postgres-baseline/pull/21) ([chris-rock](https://github.com/chris-rock))
+
 ## [2.0.1](https://github.com/dev-sec/postgres-baseline/tree/2.0.1) (2017-05-08)
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.0...2.0.1)
 
