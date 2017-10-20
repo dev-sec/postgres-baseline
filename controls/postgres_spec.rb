@@ -50,7 +50,7 @@ POSTGRES_CONF_PATH = attribute(
   'postgres_conf_path',
   description: 'define path for the postgresql configuration file',
   default: postgres.conf_path
-)
+).to_s
 
 POSTGRES_HBA_CONF_FILE = attribute(
   'postgres_hba_conf_file',
