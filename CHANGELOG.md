@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.0.3](https://github.com/dev-sec/postgres-baseline/tree/2.0.3) (2017-12-01)
+[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.2...2.0.3)
+
+**Merged pull requests:**
+
+- make sure attributes are strings [\#22](https://github.com/dev-sec/postgres-baseline/pull/22) ([arlimus](https://github.com/arlimus))
+
 ## [2.0.2](https://github.com/dev-sec/postgres-baseline/tree/2.0.2) (2017-06-27)
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.1...2.0.2)
 
