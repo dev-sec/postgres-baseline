@@ -2,9 +2,8 @@
 AllCops:
   Exclude:
   - vendor/**/*
-  - "*/puppet/Puppetfile"
-  - "*/puppet/.tmp/**/*"
-  TargetRubyVersion: 1.9
+Style/Encoding:
+  Enabled: false
 Documentation:
   Enabled: false
 AlignParameters:
