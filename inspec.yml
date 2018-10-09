@@ -1,5 +1,5 @@
 name: postgres-baseline
-title: Hardening Framework Postgres Hardening Test Suite
+title: DevSec PostgreSQL Baseline
 maintainer: DevSec Hardening Framework Team
 copyright: DevSec Hardening Framework Team
 copyright_email: hello@dev-sec.io
