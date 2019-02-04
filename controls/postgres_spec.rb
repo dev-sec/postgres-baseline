@@ -157,11 +157,24 @@ control 'postgres-06' do
   impact 1.0
   title 'Use salted MD5 to store postgresql passwords'
   desc 'Store postgresql passwords in salted hash format (e.g. salted MD5).'
-  describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
-    its('output') { should match(/^md5\S*$/) }
-  end
-  describe postgres_conf(POSTGRES_CONF_PATH) do
-    its('password_encryption') { should eq 'on' }
+  describe command('psql -V') do
+    case its('output') 
+      when /^9/
+        describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
+      	  its('output') { should match(/^md5\S*$/) }
+        end
+        describe postgres_conf(POSTGRES_CONF_PATH) do
+          its('password_encryption') { should eq 'on' }
+        end
+      when /^10/
+        describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
+      	  its('output') { should match(/^scram-sha-256\S*$/) }
+        end
+        describe postgres_conf(POSTGRES_CONF_PATH) do
+          its('password_encryption') { should eq 'scram-sha-256' }
+        end
+      end
+    end
   end
 end
 
