@@ -1,5 +1,19 @@
 # Change Log
 
+## [2.0.4](https://github.com/dev-sec/postgres-baseline/tree/2.0.4) (2019-05-08)
+[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.3...2.0.4)
+
+**Closed issues:**
+
+- Update supported versions [\#23](https://github.com/dev-sec/postgres-baseline/issues/23)
+
+**Merged pull requests:**
+
+- Update issue templates [\#29](https://github.com/dev-sec/postgres-baseline/pull/29) ([rndmh3ro](https://github.com/rndmh3ro))
+- Update baseline title [\#27](https://github.com/dev-sec/postgres-baseline/pull/27) ([chris-rock](https://github.com/chris-rock))
+- allows patch levels \(ie 9.5.14\) [\#26](https://github.com/dev-sec/postgres-baseline/pull/26) ([ojongerius](https://github.com/ojongerius))
+- Fix \#23 - update supported versions [\#25](https://github.com/dev-sec/postgres-baseline/pull/25) ([pmav99](https://github.com/pmav99))
+
 ## [2.0.3](https://github.com/dev-sec/postgres-baseline/tree/2.0.3) (2017-12-01)
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.2...2.0.3)
 
@@ -19,6 +33,7 @@
 
 **Merged pull requests:**
 
+- update rubocop dependency [\#28](https://github.com/dev-sec/postgres-baseline/pull/28) ([chris-rock](https://github.com/chris-rock))
 - update metadata [\#19](https://github.com/dev-sec/postgres-baseline/pull/19) ([chris-rock](https://github.com/chris-rock))
 - restrict ruby testing to version 2.3.3 and update gemfile [\#18](https://github.com/dev-sec/postgres-baseline/pull/18) ([atomic111](https://github.com/atomic111))
 - adjust the service for each os type and correct the control 10 [\#16](https://github.com/dev-sec/postgres-baseline/pull/16) ([atomic111](https://github.com/atomic111))
