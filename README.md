@@ -1,5 +1,4 @@
-DevSec PostgreSQL Baseline
-==========================
+# DevSec PostgreSQL Baseline
 
 This Compliance Profile ensures, that all hardening projects keep the same quality.
 
@@ -23,12 +22,12 @@ $ inspec exec https://github.com/dev-sec/postgres-baseline
 
 ## License and Author
 
-* Author:: Patrick Muench <patrick.muench1111@gmail.com >
-* Author:: Dominik Richter <dominik.richter@googlemail.com>
-* Author:: Christoph Hartmann <chris@lollyrock.com>
-* Author:: Edmund Haselwanter <me@ehaselwanter.com>
+- Author:: Patrick Muench <patrick.muench1111@gmail.com >
+- Author:: Dominik Richter <dominik.richter@googlemail.com>
+- Author:: Christoph Hartmann <chris@lollyrock.com>
+- Author:: Edmund Haselwanter <me@ehaselwanter.com>
 
-* Copyright 2014-2017, The Hardening Framework Team
+- Copyright 2014-2019, The DevSec Hardening Framework Team
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
