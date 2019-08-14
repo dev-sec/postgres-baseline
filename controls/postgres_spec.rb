@@ -132,7 +132,7 @@ control 'postgres-03' do
   pg_command = 'postgres'
   pg_command = 'postmaster' if os.redhat? && os.release.include?('6.')
   describe processes(pg_command) do
-    its('list.length') { should eq 1 }
+    its('entries.length') { should eq 1 }
   end
 end
 
