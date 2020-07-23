@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.7](https://github.com/dev-sec/postgres-baseline/tree/2.0.7) (2020-07-23)
+
+[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.6...2.0.7)
+
+**Merged pull requests:**
+
+- The release draft references the correct SHA [\#36](https://github.com/dev-sec/postgres-baseline/pull/36) ([micheelengronne](https://github.com/micheelengronne))
+
 ## [2.0.6](https://github.com/dev-sec/postgres-baseline/tree/2.0.6) (2020-06-18)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.5...2.0.6)
@@ -22,7 +30,6 @@
 - Use entries instead of list. [\#33](https://github.com/dev-sec/postgres-baseline/pull/33) ([ojongerius](https://github.com/ojongerius))
 - scram sha 256 [\#31](https://github.com/dev-sec/postgres-baseline/pull/31) ([chris-rock](https://github.com/chris-rock))
 - Support SCRAM-SHA-256 password hashing on 10+ [\#30](https://github.com/dev-sec/postgres-baseline/pull/30) ([kravietz](https://github.com/kravietz))
-- Update issue templates [\#29](https://github.com/dev-sec/postgres-baseline/pull/29) ([rndmh3ro](https://github.com/rndmh3ro))
 
 ## [2.0.4](https://github.com/dev-sec/postgres-baseline/tree/2.0.4) (2019-05-15)
 
@@ -35,6 +42,7 @@
 **Merged pull requests:**
 
 - Bump version to 2.0.4 and switch to inspec 3 for check [\#32](https://github.com/dev-sec/postgres-baseline/pull/32) ([alexpop](https://github.com/alexpop))
+- Update issue templates [\#29](https://github.com/dev-sec/postgres-baseline/pull/29) ([rndmh3ro](https://github.com/rndmh3ro))
 - update rubocop dependency [\#28](https://github.com/dev-sec/postgres-baseline/pull/28) ([chris-rock](https://github.com/chris-rock))
 - Update baseline title [\#27](https://github.com/dev-sec/postgres-baseline/pull/27) ([chris-rock](https://github.com/chris-rock))
 - allows patch levels \(ie 9.5.14\) [\#26](https://github.com/dev-sec/postgres-baseline/pull/26) ([ojongerius](https://github.com/ojongerius))
