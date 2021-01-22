@@ -68,15 +68,8 @@ control 'postgres-01' do
       end
     end
   when 'redhat', 'centos', 'oracle', 'fedora'
-    case os[:release]
-    when /6\./
-      describe command('/etc/init.d/postgresql-9.4 status') do
-        its('stdout') { should include 'running' }
-      end
-    when /7\./
-      describe command('ps aux | awk /\'bin\/postgres\'/ | wc -l') do
+      describe command('ps aux | awk /\'bin\/postmaster\'/ | wc -l') do
         its('stdout') { should include '1' }
-      end
     end
   end
 end
