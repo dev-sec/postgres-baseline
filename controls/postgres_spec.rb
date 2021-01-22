@@ -77,9 +77,9 @@ end
 control 'postgres-02' do
   impact 1.0
   title 'Use stable postgresql version'
-  desc 'Use only community or commercially supported version of the PostgreSQL software. Do not use RC, DEVEL oder BETA versions in a production environment.'
+  desc 'Use only community or commercially supported version of the PostgreSQL software (https://www.postgresql.org/support/versioning/). Do not use RC, DEVEL oder BETA versions in a production environment.'
   describe command('psql -V') do
-    its('stdout') { should match(/^psql\s\(PostgreSQL\)\s(9\.[3-6]|10\.5).*/) }
+    its('stdout') { should match(/^psql\s\(PostgreSQL\)\s(9\.[5-6]|10|11|12|13).*/) }
   end
   describe command('psql -V') do
     its('stdout') { should_not match(/RC/) }
