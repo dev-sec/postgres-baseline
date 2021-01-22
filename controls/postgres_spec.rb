@@ -92,10 +92,8 @@ control 'postgres-03' do
   impact 1.0
   title 'Run one postgresql instance per operating system'
   desc 'Only one postgresql database instance must be running on an operating system instance (both physical HW or virtualized).'
-  pg_command = 'postgres'
-  pg_command = 'postmaster' if os.redhat? && os.release.include?('6.')
-  describe processes(pg_command) do
-    its('entries.length') { should eq 1 }
+  describe command('ps aux | awk /\'bin\/postmaster\'/ | wc -l') do
+        its('stdout') { should include '1' }
   end
 end
 
