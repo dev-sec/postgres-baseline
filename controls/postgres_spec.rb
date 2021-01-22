@@ -21,43 +21,13 @@
 
 title 'PostgreSQL Server Configuration'
 
-# attributes
-
-USER = attribute(
-  'user',
-  description: 'define the postgresql user to access the database',
-  default: 'postgres'
-)
-
-PASSWORD = attribute(
-  'password',
-  description: 'define the postgresql password to access the database',
-  default: 'iloverandompasswordsbutthiswilldo'
-)
-
-POSTGRES_DATA = attribute(
-  'postgres_data',
-  description: 'define the postgresql data directory',
-  default: postgres.data_dir
-)
-
-POSTGRES_CONF_DIR = attribute(
-  'postgres_conf_dir',
-  description: 'define the postgresql configuration directory',
-  default: postgres.conf_dir
-)
-
-POSTGRES_CONF_PATH = attribute(
-  'postgres_conf_path',
-  description: 'define path for the postgresql configuration file',
-  default: postgres.conf_path
-).to_s
-
-POSTGRES_HBA_CONF_FILE = attribute(
-  'postgres_hba_conf_file',
-  description: 'define path for the postgresql configuration file',
-  default: File.join(postgres.conf_dir.to_s, 'pg_hba.conf')
-)
+# inputs
+USER = input('user', value: 'postgres')
+PASSWORD = input('password', value: 'iloverandompasswordsbutthiswilldo')
+POSTGRES_DATA = input('postgres_data', value: postgres.data_dir)
+POSTGRES_CONF_DIR = input('postgres_conf_dir', value: postgres.conf_dir)
+POSTGRES_CONF_PATH = input('postgres_conf_path', value: postgres.conf_path)
+POSTGRES_HBA_CONF_FILE = input('postgres_hba_conf_file', value: File.join(postgres.conf_dir.to_s, 'pg_hba.conf'))
 
 only_if do
   command('psql').exist?
