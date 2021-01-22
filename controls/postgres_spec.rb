@@ -27,7 +27,7 @@ PASSWORD = input('password', value: 'iloverandompasswordsbutthiswilldo')
 POSTGRES_DATA = input('postgres_data', value: postgres.data_dir)
 POSTGRES_CONF_DIR = input('postgres_conf_dir', value: postgres.conf_dir)
 POSTGRES_CONF_PATH = input('postgres_conf_path', value: postgres.conf_path)
-POSTGRES_HBA_CONF_FILE = input('postgres_hba_conf_file', value: File.join(postgres.conf_dir.to_s, 'pg_hba.conf'))
+POSTGRES_HBA_CONF_FILE = input('postgres_hba_conf_file', value: File.join(POSTGRES_CONF_DIR.to_s, 'pg_hba.conf'))
 
 only_if do
   command('psql').exist?
@@ -122,14 +122,14 @@ control 'postgres-06' do
   case postgres.version
   when /^9/
     describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
-      its('output') { should match(/^md5\S*$/) }
+      its('output') { should match(/^md5\S*$/i) }
     end
     describe postgres_conf(POSTGRES_CONF_PATH) do
       its('password_encryption') { should eq 'on' }
     end
-  when /^10/
+  else
     describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
-      its('output') { should match(/^scram-sha-256\S*$/) }
+      its('output') { should match(/^scram-sha-256\S*$/i) }
     end
     describe postgres_conf(POSTGRES_CONF_PATH) do
       its('password_encryption') { should eq 'scram-sha-256' }
