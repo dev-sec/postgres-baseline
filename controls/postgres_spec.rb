@@ -150,8 +150,8 @@ control 'postgres-08' do
   impact 1.0
   title 'Only the DBA should have privileges on pg_catalog.pg_authid table.'
   desc 'In pg_catalog.pg_authid table there are stored credentials such as username and password. If hacker has access to the table, then he can extract these credentials.'
-  describe postgres_session(USER, PASSWORD).query('\dp pg_catalog.pg_authid') do
-    its('output') { should eq 'pg_catalog | pg_authid | table | postgres=arwdDxt/postgres |' }
+  describe postgres_session(USER, PASSWORD).query("SELECT grantee FROM information_schema.role_table_grants WHERE table_name='pg_authid' group by grantee;") do
+    its('output') { should eq 'postgres' }
   end
 end
 
