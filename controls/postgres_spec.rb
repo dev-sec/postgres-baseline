@@ -234,8 +234,6 @@ control 'postgres-13' do
   desc 'Require trusted auth method for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
   describe file(POSTGRES_HBA_CONF_FILE) do
     its('content') { should_not match(/.*trust/) }
-    its('content') { should_not match(/.*password/) }
-    its('content') { should_not match(/.*ident/) }
   end
 end
 
