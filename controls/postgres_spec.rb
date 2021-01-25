@@ -37,40 +37,10 @@ control 'postgres-01' do
   impact 1.0
   title 'Postgresql should be running'
   desc 'Postgresql should be running.'
-  # describe service(postgres.service) do
-  #   it { should be_installed }
-  #   it { should be_running }
-  #   it { should be_enabled }
-  # end
-  case os[:name]
-  when 'ubuntu'
-    case os[:release]
-    when '12.04'
-      describe command('/etc/init.d/postgresql status') do
-        its('stdout') { should include 'online' }
-      end
-    when '14.04'
-      describe command('service postgresql status') do
-        its('stdout') { should include 'online' }
-      end
-    when '16.04'
-      describe systemd_service(postgres.service) do
-        it { should be_installed }
-        it { should be_running }
-        it { should be_enabled }
-      end
-    end
-  when 'debian'
-    case os[:release]
-    when /7\./
-      describe command('/etc/init.d/postgresql status') do
-        its('stdout') { should include 'Running' }
-      end
-    end
-  when 'redhat', 'centos', 'oracle', 'fedora'
-      describe command('ps aux | awk /\'bin\/postmaster\'/ | wc -l') do
-        its('stdout') { should include '1' }
-    end
+  describe service(postgres.service) do
+    it { should be_installed }
+    it { should be_running }
+    it { should be_enabled }
   end
 end
 
