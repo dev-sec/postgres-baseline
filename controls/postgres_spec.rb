@@ -28,6 +28,7 @@ POSTGRES_DATA = input('postgres_data', value: postgres.data_dir)
 POSTGRES_CONF_DIR = input('postgres_conf_dir', value: postgres.conf_dir)
 POSTGRES_CONF_PATH = input('postgres_conf_path', value: File.join(POSTGRES_CONF_DIR.to_s, 'postgresql.conf'))
 POSTGRES_HBA_CONF_FILE = input('postgres_hba_conf_file', value: File.join(POSTGRES_CONF_DIR.to_s, 'pg_hba.conf'))
+POSTGRES_LOG_DIR = input('postgres_log_dir', value: '/var/log/postgresql')
 
 only_if do
   command('psql').exist?
@@ -178,6 +179,32 @@ control 'postgres-10' do
     it { should_not be_executable.by('group') }
     it { should_not be_executable.by('other') }
   end
+  describe file(POSTGRES_DATA) do
+    it { should be_directory }
+    it { should be_owned_by USER }
+    it { should be_readable.by('owner') }
+    it { should_not be_readable.by('group') }
+    it { should_not be_readable.by('other') }
+    it { should be_writable.by('owner') }
+    it { should_not be_writable.by('group') }
+    it { should_not be_writable.by('other') }
+    it { should be_executable.by('owner') }
+    it { should_not be_executable.by('group') }
+    it { should_not be_executable.by('other') }
+  end
+  describe file(POSTGRES_LOG_DIR) do
+    it { should be_directory }
+    it { should be_owned_by USER }
+    it { should be_readable.by('owner') }
+    it { should_not be_readable.by('group') }
+    it { should_not be_readable.by('other') }
+    it { should be_writable.by('owner') }
+    it { should_not be_writable.by('group') }
+    it { should_not be_writable.by('other') }
+    it { should be_executable.by('owner') }
+    it { should_not be_executable.by('group') }
+    it { should_not be_executable.by('other') }
+  end
 end
 
 control 'postgres-11' do
@@ -237,7 +264,7 @@ control 'postgres-15' do
     its('log_duration') { should eq 'on' }
     its('log_hostname') { should eq 'on' }
     its('log_directory') { should eq 'pg_log' }
-    its('log_line_prefix') { should eq '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h' }
+    its('log_line_prefix') { should eq '%t %u %d %h' }
   end
 end
 
@@ -264,6 +291,15 @@ control 'postgres-18' do
   title 'Restrictive usage of SQL functions with security definer'
   desc 'Avoid SQL functions with security definer.'
   describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM pg_proc JOIN pg_namespace ON pg_proc.pronamespace=pg_namespace.oid JOIN pg_user ON pg_proc.proowner=pg_user.usesysid WHERE prosecdef='t';") do
+    its('output') { should eq '0' }
+  end
+end
+
+control 'postgres-19' do
+  impact 1.0
+  title 'Delete not required procedural languages'
+  desc 'You should delete programming languages which are not necessary. "internal", "c", "plpgsql" and "sql" are allowed defaults.'
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM pg_language where lanname NOT IN ('internal', 'c', 'sql', 'plpgsql');") do
     its('output') { should eq '0' }
   end
 end
