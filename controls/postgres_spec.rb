@@ -50,7 +50,7 @@ control 'postgres-02' do
   title 'Use stable postgresql version'
   desc 'Use only community or commercially supported version of the PostgreSQL software (https://www.postgresql.org/support/versioning/). Do not use RC, DEVEL oder BETA versions in a production environment.'
   describe command('psql -V') do
-    its('stdout') { should match(/^psql\s\(PostgreSQL\)\s(10|11|12|13).*/) }
+    its('stdout') { should match(/^psql\s\(PostgreSQL\)\s(9.6|10|11|12|13).*/) }
   end
   describe command('psql -V') do
     its('stdout') { should_not match(/RC/) }
@@ -99,11 +99,21 @@ control 'postgres-07' do
   impact 1.0
   title 'Use salted hash to store postgresql passwords'
   desc 'Store postgresql passwords in salted hash format (e.g. salted MD5).'
-  describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
-    its('output') { should match(/^scram-sha-256\S*$/i) }
-  end
-  describe postgres_conf(POSTGRES_CONF_PATH) do
-    its('password_encryption') { should eq 'scram-sha-256' }
+  case postgres.version
+  when /^9/
+    describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
+      its('output') { should match(/^md5\S*$/i) }
+    end
+    describe postgres_conf(POSTGRES_CONF_PATH) do
+      its('password_encryption') { should eq 'on' }
+    end
+  else
+    describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
+      its('output') { should match(/^scram-sha-256\S*$/i) }
+    end
+    describe postgres_conf(POSTGRES_CONF_PATH) do
+      its('password_encryption') { should eq 'scram-sha-256' }
+    end
   end
 end
 
@@ -201,8 +211,15 @@ control 'postgres-14' do
   impact 1.0
   title 'Require only trusted authentication mathods in pg_hba.conf'
   desc 'Require trusted auth method for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
-  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == ('hostssl') } do
-    its('auth_method') { should all eq ('scram-sha-256') }
+  case postgres.version
+  when /^9/
+    describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == ('hostssl') } do
+      its('auth_method') { should all eq ('md5') }
+    end
+  else
+    describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == ('hostssl') } do
+      its('auth_method') { should all eq ('scram-sha-256') }
+    end
   end
 end
 
