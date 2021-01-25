@@ -289,4 +289,3 @@ control 'postgres-20' do
     it { should_not be_executable.by('other') }
   end
 end
-
