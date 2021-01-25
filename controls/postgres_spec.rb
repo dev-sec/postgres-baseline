@@ -26,7 +26,7 @@ USER = input('user', value: 'postgres')
 PASSWORD = input('password', value: 'iloverandompasswordsbutthiswilldo')
 POSTGRES_DATA = input('postgres_data', value: postgres.data_dir)
 POSTGRES_CONF_DIR = input('postgres_conf_dir', value: postgres.conf_dir)
-POSTGRES_CONF_PATH = input('postgres_conf_path', value: postgres.conf_path)
+POSTGRES_CONF_PATH = input('postgres_conf_path', value: File.join(POSTGRES_CONF_DIR.to_s, 'postgresql.conf'))
 POSTGRES_HBA_CONF_FILE = input('postgres_hba_conf_file', value: File.join(POSTGRES_CONF_DIR.to_s, 'pg_hba.conf'))
 
 only_if do
@@ -212,7 +212,7 @@ end
 
 control 'postgres-11' do
   impact 1.0
-  title 'SSL is deactivated just for testing the chef-hardening-cookbook. It is recommended to activate ssl communication.'
+  title 'It is recommended to activate ssl communication.'
   desc 'The hardening-cookbook will delete the links from #var/lib/postgresql/%postgresql-version%/main/server.crt to etc/ssl/certs/ssl-cert-snakeoil.pem and #var/lib/postgresql/%postgresql-version%/main/server.key to etc/ssl/private/ssl-cert-snakeoil.key on Debian systems. This certificates are self-signed (see http://en.wikipedia.org/wiki/Snake_oil_%28cryptography%29) and therefore not trusted. You have to #provide our own trusted certificates for SSL.'
   describe postgres_conf(POSTGRES_CONF_PATH) do
     its('ssl') { should eq 'on' }
@@ -230,24 +230,31 @@ end
 
 control 'postgres-13' do
   impact 1.0
-  title 'Require MD5 for ALL users, peers in pg_hba.conf'
-  desc 'Require MD5 for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
+  title 'Require only trusted authentication mathods in pg_hba.conf'
+  desc 'Require trusted auth method for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
   describe file(POSTGRES_HBA_CONF_FILE) do
-    its('content') { should match(/local\s.*?all\s.*?all\s.*?md5/) }
-    its('content') { should match(%r{host\s.*?all\s.*?all\s.*?127.0.0.1\/32\s.*?md5}) }
-    its('content') { should match(%r{host\s.*?all\s.*?all\s.*?::1\/128\s.*?md5}) }
-    its('content') { should_not match(/.*password/) }
     its('content') { should_not match(/.*trust/) }
-    its('content') { should_not match(/.*crypt/) }
+    its('content') { should_not match(/.*password/) }
+    its('content') { should_not match(/.*ident/) }
+  end
+end
+
+control 'postgres-13.1' do
+  impact 1.0
+  title 'Require SSL communication between all peers'
+  desc 'Do not allow communication without SSL among all peers.'
+  describe file(POSTGRES_HBA_CONF_FILE) do
+    its('content') { should_not match(/^host .*/) }
+    its('content') { should_not match(/^hostnossl .*/) }
   end
 end
 
 control 'postgres-14' do
-  impact 1.0
-  title 'We accept one peer and one ident for now (chef automation)'
-  desc 'We accept one peer and one ident for now (chef automation)'
-  describe command('cat ' + POSTGRES_HBA_CONF_FILE.to_s + ' | egrep \'peer|ident\' | wc -l') do
-    its('stdout') { should match(/^[2|1]/) }
+  impact 0.7
+  title 'Accept peer authentication only for necessary administration users'
+  desc 'Accept peer authentication only for necessary administration users in case this is needed.'
+  describe file(POSTGRES_HBA_CONF_FILE) do
+     its('content') { should_not match(/.*peer/) }
   end
 end
 
@@ -262,6 +269,6 @@ control 'postgres-15' do
     its('log_duration') { should eq 'on' }
     its('log_hostname') { should eq 'on' }
     its('log_directory') { should eq 'pg_log' }
-    its('log_line_prefix') { should eq '%t %u %d %h' }
+    its('log_line_prefix') { should eq '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h' }
   end
 end
