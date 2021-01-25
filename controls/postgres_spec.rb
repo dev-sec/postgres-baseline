@@ -127,16 +127,6 @@ end
 
 control 'postgres-10' do
   impact 1.0
-  title 'The PostgreSQL "data_directory" should be assigned exclusively to the database account (such as "postgres").'
-  desc 'If file permissions on data are not property defined, other users may read, modify or delete those files.'
-  find_command = 'find ' + POSTGRES_DATA.to_s + ' -user ' + USER + ' -group ' + USER + ' -perm /go=rwx'
-  describe command(find_command) do
-    its('stdout') { should eq '' }
-  end
-end
-
-control 'postgres-11' do
-  impact 1.0
   title 'The PostgreSQL config directory and file should be assigned exclusively to the database account (such as "postgres").'
   desc 'If file permissions on config files are not property defined, other users may read, modify or delete those files.'
   describe file(POSTGRES_CONF_DIR) do
@@ -206,7 +196,7 @@ control 'postgres-11' do
   end
 end
 
-control 'postgres-12' do
+control 'postgres-11' do
   impact 1.0
   title 'It is recommended to activate ssl communication.'
   desc 'The hardening-cookbook will delete the links from #var/lib/postgresql/%postgresql-version%/main/server.crt to etc/ssl/certs/ssl-cert-snakeoil.pem and #var/lib/postgresql/%postgresql-version%/main/server.key to etc/ssl/private/ssl-cert-snakeoil.key on Debian systems. This certificates are self-signed (see http://en.wikipedia.org/wiki/Snake_oil_%28cryptography%29) and therefore not trusted. You have to #provide our own trusted certificates for SSL.'
@@ -215,7 +205,7 @@ control 'postgres-12' do
   end
 end
 
-control 'postgres-13' do
+control 'postgres-12' do
   impact 1.0
   title 'Use strong chiphers for ssl communication'
   desc 'The following categories of SSL Ciphers must not be used: ADH, LOW, EXP and MD5. A very good description for secure postgres installation / configuration can be found at: https://bettercrypto.org'
@@ -224,12 +214,21 @@ control 'postgres-13' do
   end
 end
 
+control 'postgres-13' do
+  impact 1.0
+  title 'Require peer auth_method for local users'
+  desc 'Require peer auth_method for local users.'
+  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == 'local' } do
+    its('auth_method') { should all eq 'peer' }
+  end
+end
+
 control 'postgres-14' do
   impact 1.0
   title 'Require only trusted authentication mathods in pg_hba.conf'
   desc 'Require trusted auth method for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
-  describe file(POSTGRES_HBA_CONF_FILE) do
-    its('content') { should_not match(/.*trust/) }
+  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == 'hostssl' } do
+    its('auth_method') { should all eq 'scram-sha-256' }
   end
 end
 
@@ -244,15 +243,6 @@ control 'postgres-15' do
 end
 
 control 'postgres-16' do
-  impact 0.7
-  title 'Accept peer authentication only for necessary administration users'
-  desc 'Accept peer authentication only for necessary administration users in case this is needed.'
-  describe file(POSTGRES_HBA_CONF_FILE) do
-     its('content') { should_not match(/.*peer/) }
-  end
-end
-
-control 'postgres-17' do
   impact 1.0
   title 'Enable logging functions'
   desc 'Logging functions must be turned on and properly configured according / compliant to local law.'
@@ -267,25 +257,25 @@ control 'postgres-17' do
   end
 end
 
-control 'postgres-18' do
+control 'postgres-17' do
   impact 1.0
-  title 'Grants should not assign to public'
-  desc 'Grants should not assign to public to avoid issues with tenant separations.'
+  title 'Grants should not be assigned to public'
+  desc 'Grants should not be assigned to public to avoid issues with tenant separations.'
   describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM   information_schema.table_privileges WHERE  grantee = 'PUBLIC' AND table_schema NOT LIKE 'pg_catalog' AND table_schema NOT LIKE 'information_schema';") do
     its('output') { should eq '0' }
   end
 end
 
-control 'postgres-19' do
+control 'postgres-18' do
   impact 1.0
-  title 'Grants should not assign with grant option'
-  desc 'Grants should not assign with grant option exept postgresql admin superuser.'
+  title 'Grants should not be assigned with grant option privilege'
+  desc 'Grants should not be assigned with grant option exept postgresql admin superuser.'
   describe postgres_session(USER, PASSWORD).query("SELECT COUNT(is_grantable) FROM   information_schema.table_privileges WHERE grantee NOT LIKE 'postgres' AND is_grantable = 'YES';") do
     its('output') { should eq '0' }
   end
 end
 
-control 'postgres-20' do
+control 'postgres-19' do
   impact 1.0
   title 'Restrictive usage of SQL functions with security definer'
   desc 'Avoid SQL functions with security definer.'
