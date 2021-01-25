@@ -240,3 +240,30 @@ control 'postgres-15' do
     its('log_line_prefix') { should eq '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h' }
   end
 end
+
+control 'postgres-16' do
+  impact 1.0
+  title 'Grants should not assign to public'
+  desc 'Grants should not assign to public to avoid issues with tenant separations.'
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM   information_schema.table_privileges WHERE  grantee = 'PUBLIC' AND table_schema NOT LIKE 'pg_catalog' AND table_schema NOT LIKE 'information_schema';") do
+    its('output') { should eq '0' }
+  end
+end
+
+control 'postgres-17' do
+  impact 1.0
+  title 'Grants should not assign with grant option'
+  desc 'Grants should not assign with grant option exept postgresql admin superuser.'
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(is_grantable) FROM   information_schema.table_privileges WHERE grantee NOT LIKE 'postgres' AND is_grantable = 'YES';") do
+    its('output') { should eq '0' }
+  end
+end
+
+control 'postgres-18' do
+  impact 1.0
+  title 'Restrictive usage of SQL functions with security definer'
+  desc 'Avoid SQL functions with security definer.'
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM pg_proc JOIN pg_namespace ON pg_proc.pronamespace=pg_namespace.oid JOIN pg_user ON pg_proc.proowner=pg_user.usesysid WHERE prosecdef='t';") do
+    its('output') { should eq '0' }
+  end
+end
