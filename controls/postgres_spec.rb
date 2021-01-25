@@ -50,7 +50,7 @@ control 'postgres-02' do
   title 'Use stable postgresql version'
   desc 'Use only community or commercially supported version of the PostgreSQL software (https://www.postgresql.org/support/versioning/). Do not use RC, DEVEL oder BETA versions in a production environment.'
   describe command('psql -V') do
-    its('stdout') { should match(/^psql\s\(PostgreSQL\)\s(9\.[5-6]|10|11|12|13).*/) }
+    its('stdout') { should match(/^psql\s\(PostgreSQL\)\s(10|11|12|13).*/) }
   end
   describe command('psql -V') do
     its('stdout') { should_not match(/RC/) }
@@ -79,6 +79,15 @@ end
 
 control 'postgres-05' do
   impact 1.0
+  title 'Delete not required procedural languages'
+  desc 'You should delete programming languages which are not necessary. "internal", "c", "plpgsql" and "sql" are allowed defaults.'
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM pg_language where lanname NOT IN ('internal', 'c', 'sql', 'plpgsql');") do
+    its('output') { should eq '0' }
+  end
+end
+
+control 'postgres-06' do
+  impact 1.0
   title 'Set a password for each user'
   desc 'It tests for usernames which does not set a password.'
   describe postgres_session(USER, PASSWORD).query('SELECT count(*) FROM pg_shadow WHERE passwd IS NULL;') do
@@ -86,29 +95,19 @@ control 'postgres-05' do
   end
 end
 
-control 'postgres-06' do
+control 'postgres-07' do
   impact 1.0
   title 'Use salted hash to store postgresql passwords'
   desc 'Store postgresql passwords in salted hash format (e.g. salted MD5).'
-  case postgres.version
-  when /^9/
-    describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
-      its('output') { should match(/^md5\S*$/i) }
-    end
-    describe postgres_conf(POSTGRES_CONF_PATH) do
-      its('password_encryption') { should eq 'on' }
-    end
-  else
-    describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
-      its('output') { should match(/^scram-sha-256\S*$/i) }
-    end
-    describe postgres_conf(POSTGRES_CONF_PATH) do
-      its('password_encryption') { should eq 'scram-sha-256' }
-    end
+  describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
+    its('output') { should match(/^scram-sha-256\S*$/i) }
+  end
+  describe postgres_conf(POSTGRES_CONF_PATH) do
+    its('password_encryption') { should eq 'scram-sha-256' }
   end
 end
 
-control 'postgres-07' do
+control 'postgres-08' do
   impact 1.0
   title 'Only the postgresql database administrator should have SUPERUSER, CREATEDB or CREATEROLE privileges.'
   desc 'Granting extensive privileges to ordinary users can cause various security problems, such as: intentional/ unintentional access, modification or destroying data'
@@ -117,7 +116,7 @@ control 'postgres-07' do
   end
 end
 
-control 'postgres-08' do
+control 'postgres-09' do
   impact 1.0
   title 'Only the DBA should have privileges on pg_catalog.pg_authid table.'
   desc 'In pg_catalog.pg_authid table there are stored credentials such as username and password. If hacker has access to the table, then he can extract these credentials.'
@@ -126,7 +125,7 @@ control 'postgres-08' do
   end
 end
 
-control 'postgres-09' do
+control 'postgres-10' do
   impact 1.0
   title 'The PostgreSQL "data_directory" should be assigned exclusively to the database account (such as "postgres").'
   desc 'If file permissions on data are not property defined, other users may read, modify or delete those files.'
@@ -136,7 +135,7 @@ control 'postgres-09' do
   end
 end
 
-control 'postgres-10' do
+control 'postgres-11' do
   impact 1.0
   title 'The PostgreSQL config directory and file should be assigned exclusively to the database account (such as "postgres").'
   desc 'If file permissions on config files are not property defined, other users may read, modify or delete those files.'
@@ -207,7 +206,7 @@ control 'postgres-10' do
   end
 end
 
-control 'postgres-11' do
+control 'postgres-12' do
   impact 1.0
   title 'It is recommended to activate ssl communication.'
   desc 'The hardening-cookbook will delete the links from #var/lib/postgresql/%postgresql-version%/main/server.crt to etc/ssl/certs/ssl-cert-snakeoil.pem and #var/lib/postgresql/%postgresql-version%/main/server.key to etc/ssl/private/ssl-cert-snakeoil.key on Debian systems. This certificates are self-signed (see http://en.wikipedia.org/wiki/Snake_oil_%28cryptography%29) and therefore not trusted. You have to #provide our own trusted certificates for SSL.'
@@ -216,7 +215,7 @@ control 'postgres-11' do
   end
 end
 
-control 'postgres-12' do
+control 'postgres-13' do
   impact 1.0
   title 'Use strong chiphers for ssl communication'
   desc 'The following categories of SSL Ciphers must not be used: ADH, LOW, EXP and MD5. A very good description for secure postgres installation / configuration can be found at: https://bettercrypto.org'
@@ -225,7 +224,7 @@ control 'postgres-12' do
   end
 end
 
-control 'postgres-13' do
+control 'postgres-14' do
   impact 1.0
   title 'Require only trusted authentication mathods in pg_hba.conf'
   desc 'Require trusted auth method for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
@@ -234,7 +233,7 @@ control 'postgres-13' do
   end
 end
 
-control 'postgres-13.1' do
+control 'postgres-15' do
   impact 1.0
   title 'Require SSL communication between all peers'
   desc 'Do not allow communication without SSL among all peers.'
@@ -244,7 +243,7 @@ control 'postgres-13.1' do
   end
 end
 
-control 'postgres-14' do
+control 'postgres-16' do
   impact 0.7
   title 'Accept peer authentication only for necessary administration users'
   desc 'Accept peer authentication only for necessary administration users in case this is needed.'
@@ -253,7 +252,7 @@ control 'postgres-14' do
   end
 end
 
-control 'postgres-15' do
+control 'postgres-17' do
   impact 1.0
   title 'Enable logging functions'
   desc 'Logging functions must be turned on and properly configured according / compliant to local law.'
@@ -268,7 +267,7 @@ control 'postgres-15' do
   end
 end
 
-control 'postgres-16' do
+control 'postgres-18' do
   impact 1.0
   title 'Grants should not assign to public'
   desc 'Grants should not assign to public to avoid issues with tenant separations.'
@@ -277,7 +276,7 @@ control 'postgres-16' do
   end
 end
 
-control 'postgres-17' do
+control 'postgres-19' do
   impact 1.0
   title 'Grants should not assign with grant option'
   desc 'Grants should not assign with grant option exept postgresql admin superuser.'
@@ -286,20 +285,11 @@ control 'postgres-17' do
   end
 end
 
-control 'postgres-18' do
+control 'postgres-20' do
   impact 1.0
   title 'Restrictive usage of SQL functions with security definer'
   desc 'Avoid SQL functions with security definer.'
   describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM pg_proc JOIN pg_namespace ON pg_proc.pronamespace=pg_namespace.oid JOIN pg_user ON pg_proc.proowner=pg_user.usesysid WHERE prosecdef='t';") do
-    its('output') { should eq '0' }
-  end
-end
-
-control 'postgres-19' do
-  impact 1.0
-  title 'Delete not required procedural languages'
-  desc 'You should delete programming languages which are not necessary. "internal", "c", "plpgsql" and "sql" are allowed defaults.'
-  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM pg_language where lanname NOT IN ('internal', 'c', 'sql', 'plpgsql');") do
     its('output') { should eq '0' }
   end
 end
