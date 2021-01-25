@@ -10,7 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
-      fail_fast: false
+      fail-fast: false
       matrix:
         ruby-version: ['2.6', '2.7', '3.0']
 
