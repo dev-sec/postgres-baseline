@@ -64,7 +64,7 @@ control 'postgres-03' do
   title 'Run one postgresql instance per operating system'
   desc 'Only one postgresql database instance must be running on an operating system instance (both physical HW or virtualized).'
   describe command('ps aux | awk /\'bin\/postmaster\'/ | wc -l') do
-        its('stdout') { should include '1' }
+    its('stdout') { should include '1' }
   end
 end
 
@@ -168,32 +168,6 @@ control 'postgres-10' do
     it { should_not be_executable.by('group') }
     it { should_not be_executable.by('other') }
   end
-  describe file(POSTGRES_DATA) do
-    it { should be_directory }
-    it { should be_owned_by USER }
-    it { should be_readable.by('owner') }
-    it { should_not be_readable.by('group') }
-    it { should_not be_readable.by('other') }
-    it { should be_writable.by('owner') }
-    it { should_not be_writable.by('group') }
-    it { should_not be_writable.by('other') }
-    it { should be_executable.by('owner') }
-    it { should_not be_executable.by('group') }
-    it { should_not be_executable.by('other') }
-  end
-  describe file(POSTGRES_LOG_DIR) do
-    it { should be_directory }
-    it { should be_owned_by USER }
-    it { should be_readable.by('owner') }
-    it { should_not be_readable.by('group') }
-    it { should_not be_readable.by('other') }
-    it { should be_writable.by('owner') }
-    it { should_not be_writable.by('group') }
-    it { should_not be_writable.by('other') }
-    it { should be_executable.by('owner') }
-    it { should_not be_executable.by('group') }
-    it { should_not be_executable.by('other') }
-  end
 end
 
 control 'postgres-11' do
@@ -218,8 +192,8 @@ control 'postgres-13' do
   impact 1.0
   title 'Require peer auth_method for local users'
   desc 'Require peer auth_method for local users.'
-  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == 'local' } do
-    its('auth_method') { should all eq 'peer' }
+  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == ('local') } do
+    its('auth_method') { should all eq ('peer') }
   end
 end
 
@@ -227,8 +201,8 @@ control 'postgres-14' do
   impact 1.0
   title 'Require only trusted authentication mathods in pg_hba.conf'
   desc 'Require trusted auth method for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
-  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == 'hostssl' } do
-    its('auth_method') { should all eq 'scram-sha-256' }
+  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == ('hostssl') } do
+    its('auth_method') { should all eq ('scram-sha-256') }
   end
 end
 
@@ -283,3 +257,36 @@ control 'postgres-19' do
     its('output') { should eq '0' }
   end
 end
+
+control 'postgres-20' do
+  impact 1.0
+  title 'The PostgreSQL data and log directory should be assigned exclusively to the database account (such as "postgres").'
+  desc 'The PostgreSQL data and log directory should be assigned exclusively to the database account (such as "postgres").'
+  describe file(POSTGRES_DATA) do
+    it { should be_directory }
+    it { should be_owned_by USER }
+    it { should be_readable.by('owner') }
+    it { should_not be_readable.by('group') }
+    it { should_not be_readable.by('other') }
+    it { should be_writable.by('owner') }
+    it { should_not be_writable.by('group') }
+    it { should_not be_writable.by('other') }
+    it { should be_executable.by('owner') }
+    it { should_not be_executable.by('group') }
+    it { should_not be_executable.by('other') }
+  end
+  describe file(POSTGRES_LOG_DIR) do
+    it { should be_directory }
+    it { should be_owned_by USER }
+    it { should be_readable.by('owner') }
+    it { should_not be_readable.by('group') }
+    it { should_not be_readable.by('other') }
+    it { should be_writable.by('owner') }
+    it { should_not be_writable.by('group') }
+    it { should_not be_writable.by('other') }
+    it { should be_executable.by('owner') }
+    it { should_not be_executable.by('group') }
+    it { should_not be_executable.by('other') }
+  end
+end
+
