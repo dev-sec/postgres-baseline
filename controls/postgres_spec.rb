@@ -252,7 +252,7 @@ control 'postgres-17' do
   impact 1.0
   title 'Grants should not be assigned to public'
   desc 'Grants should not be assigned to public to avoid issues with tenant separations.'
-  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM   information_schema.table_privileges WHERE  grantee = 'PUBLIC' AND table_schema NOT LIKE 'pg_catalog' AND table_schema NOT LIKE 'information_schema';") do
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM information_schema.table_privileges WHERE grantee = 'PUBLIC' AND table_schema NOT LIKE 'pg_catalog' AND table_schema NOT LIKE 'information_schema';") do
     its('output') { should eq '0' }
   end
 end
