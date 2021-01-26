@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 # Copyright 2016, Patrick Muench
 # Copyright 2016-2019 DevSec Hardening Framework Team
@@ -202,8 +203,8 @@ control 'postgres-13' do
   impact 1.0
   title 'Require peer auth_method for local users'
   desc 'Require peer auth_method for local users.'
-  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == ('local') } do
-    its('auth_method') { should all eq ('peer') }
+  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type eq 'local' } do
+    its('auth_method') { should all eq 'peer' }
   end
 end
 
@@ -213,12 +214,12 @@ control 'postgres-14' do
   desc 'Require trusted auth method for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
   case postgres.version
   when /^9/
-    describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == ('hostssl') } do
-      its('auth_method') { should all eq ('md5') }
+    describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == 'hostssl' } do
+      its('auth_method') { should all eq 'md5' }
     end
   else
-    describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == ('hostssl') } do
-      its('auth_method') { should all eq ('scram-sha-256') }
+    describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == 'hostssl' } do
+      its('auth_method') { should all eq 'scram-sha-256' }
     end
   end
 end
