@@ -261,7 +261,7 @@ control 'postgres-18' do
   impact 1.0
   title 'Grants should not be assigned with grant option privilege'
   desc 'Grants should not be assigned with grant option exept postgresql admin superuser.'
-  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(is_grantable) FROM   information_schema.table_privileges WHERE grantee NOT LIKE 'postgres' AND is_grantable = 'YES';") do
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(is_grantable) FROM information_schema.table_privileges WHERE grantee NOT LIKE 'postgres' AND is_grantable = 'YES';") do
     its('output') { should eq '0' }
   end
 end
