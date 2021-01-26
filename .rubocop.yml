@@ -26,5 +26,6 @@ Metrics/PerceivedComplexity:
   Max: 10
 Metrics/AbcSize:
   Max: 30
+# https://github.com/rubocop-hq/rubocop/issues/4198
 Lint/AmbiguousBlockAssociation:
   Enabled: False
