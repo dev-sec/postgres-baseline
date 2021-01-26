@@ -6,7 +6,7 @@ Style/Encoding:
   Enabled: false
 Documentation:
   Enabled: false
-AlignParameters:
+ParameterAlignment:
   Enabled: true
 HashSyntax:
   Enabled: true
