@@ -1,6 +1,8 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
+# frozen_string_literal: true
+
 # Copyright 2016, Patrick Muench
 # Copyright 2016-2019 DevSec Hardening Framework Team
 #

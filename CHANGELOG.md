@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.8](https://github.com/dev-sec/postgres-baseline/tree/2.0.8) (2021-01-26)
+
+[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.7...2.0.8)
+
+**Merged pull requests:**
+
+-  add github action for testing [\#38](https://github.com/dev-sec/postgres-baseline/pull/38) ([rndmh3ro](https://github.com/rndmh3ro))
+
 ## [2.0.7](https://github.com/dev-sec/postgres-baseline/tree/2.0.7) (2020-07-23)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.6...2.0.7)
