@@ -1,22 +1,23 @@
 ---
 AllCops:
+  NewCops: enable
   Exclude:
   - vendor/**/*
 Style/Encoding:
   Enabled: false
-Documentation:
+Style/Documentation:
   Enabled: false
-ParameterAlignment:
+Layout/ParameterAlignment:
   Enabled: true
-HashSyntax:
+Style/HashSyntax:
   Enabled: true
-LineLength:
+Layout/LineLength:
   Enabled: false
-EmptyLinesAroundBlockBody:
+Layout/EmptyLinesAroundBlockBody:
   Enabled: false
-MethodLength:
+Metrics/MethodLength:
   Max: 40
-NumericLiterals:
+Style/NumericLiterals:
   MinDigits: 10
 Metrics/BlockLength:
   Max: 42
@@ -26,3 +27,6 @@ Metrics/PerceivedComplexity:
   Max: 10
 Metrics/AbcSize:
   Max: 30
+# https://github.com/rubocop-hq/rubocop/issues/4198
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
