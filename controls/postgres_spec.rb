@@ -1,5 +1,4 @@
 # encoding: utf-8
-
 # frozen_string_literal: true
 
 # Copyright 2016, Patrick Muench
@@ -23,43 +22,14 @@
 
 title 'PostgreSQL Server Configuration'
 
-# attributes
-
-USER = attribute(
-  'user',
-  description: 'define the postgresql user to access the database',
-  default: 'postgres'
-)
-
-PASSWORD = attribute(
-  'password',
-  description: 'define the postgresql password to access the database',
-  default: 'iloverandompasswordsbutthiswilldo'
-)
-
-POSTGRES_DATA = attribute(
-  'postgres_data',
-  description: 'define the postgresql data directory',
-  default: postgres.data_dir
-)
-
-POSTGRES_CONF_DIR = attribute(
-  'postgres_conf_dir',
-  description: 'define the postgresql configuration directory',
-  default: postgres.conf_dir
-)
-
-POSTGRES_CONF_PATH = attribute(
-  'postgres_conf_path',
-  description: 'define path for the postgresql configuration file',
-  default: postgres.conf_path
-).to_s
-
-POSTGRES_HBA_CONF_FILE = attribute(
-  'postgres_hba_conf_file',
-  description: 'define path for the postgresql configuration file',
-  default: File.join(postgres.conf_dir.to_s, 'pg_hba.conf')
-)
+# inputs
+USER = input('user', value: 'postgres')
+PASSWORD = input('password', value: 'iloverandompasswordsbutthiswilldo')
+POSTGRES_DATA = input('postgres_data', value: postgres.data_dir)
+POSTGRES_CONF_DIR = input('postgres_conf_dir', value: postgres.conf_dir)
+POSTGRES_CONF_PATH = input('postgres_conf_path', value: File.join(POSTGRES_CONF_DIR.to_s, 'postgresql.conf'))
+POSTGRES_HBA_CONF_FILE = input('postgres_hba_conf_file', value: File.join(POSTGRES_CONF_DIR.to_s, 'pg_hba.conf'))
+POSTGRES_LOG_DIR = input('postgres_log_dir', value: '/var/log/postgresql')
 
 only_if do
   command('psql').exist?
@@ -69,56 +39,19 @@ control 'postgres-01' do
   impact 1.0
   title 'Postgresql should be running'
   desc 'Postgresql should be running.'
-  # describe service(postgres.service) do
-  #   it { should be_installed }
-  #   it { should be_running }
-  #   it { should be_enabled }
-  # end
-  case os[:name]
-  when 'ubuntu'
-    case os[:release]
-    when '12.04'
-      describe command('/etc/init.d/postgresql status') do
-        its('stdout') { should include 'online' }
-      end
-    when '14.04'
-      describe command('service postgresql status') do
-        its('stdout') { should include 'online' }
-      end
-    when '16.04'
-      describe systemd_service(postgres.service) do
-        it { should be_installed }
-        it { should be_running }
-        it { should be_enabled }
-      end
-    end
-  when 'debian'
-    case os[:release]
-    when /7\./
-      describe command('/etc/init.d/postgresql status') do
-        its('stdout') { should include 'Running' }
-      end
-    end
-  when 'redhat', 'centos', 'oracle', 'fedora'
-    case os[:release]
-    when /6\./
-      describe command('/etc/init.d/postgresql-9.4 status') do
-        its('stdout') { should include 'running' }
-      end
-    when /7\./
-      describe command('ps aux | awk /\'bin\/postgres\'/ | wc -l') do
-        its('stdout') { should include '1' }
-      end
-    end
+  describe service(postgres.service) do
+    it { should be_installed }
+    it { should be_running }
+    it { should be_enabled }
   end
 end
 
 control 'postgres-02' do
   impact 1.0
   title 'Use stable postgresql version'
-  desc 'Use only community or commercially supported version of the PostgreSQL software. Do not use RC, DEVEL oder BETA versions in a production environment.'
+  desc 'Use only community or commercially supported version of the PostgreSQL software (https://www.postgresql.org/support/versioning/). Do not use RC, DEVEL oder BETA versions in a production environment.'
   describe command('psql -V') do
-    its('stdout') { should match(/^psql\s\(PostgreSQL\)\s(9\.[3-6]|10\.5).*/) }
+    its('stdout') { should match(/^psql\s\(PostgreSQL\)\s(9.6|10|11|12|13).*/) }
   end
   describe command('psql -V') do
     its('stdout') { should_not match(/RC/) }
@@ -131,10 +64,15 @@ control 'postgres-03' do
   impact 1.0
   title 'Run one postgresql instance per operating system'
   desc 'Only one postgresql database instance must be running on an operating system instance (both physical HW or virtualized).'
-  pg_command = 'postgres'
-  pg_command = 'postmaster' if os.redhat? && os.release.include?('6.')
-  describe processes(pg_command) do
-    its('entries.length') { should eq 1 }
+  case os[:name]
+  when 'redhat', 'centos', 'oracle', 'fedora'
+    describe command('ps aux | awk /\'bin\/postmaster\'/ | wc -l') do
+      its('stdout') { should include '1' }
+    end
+  when 'debian', 'ubuntu'
+    describe command('ps aux | awk /\'bin\/postgres\'/ | wc -l') do
+      its('stdout') { should include '1' }
+    end
   end
 end
 
@@ -149,6 +87,15 @@ end
 
 control 'postgres-05' do
   impact 1.0
+  title 'Delete not required procedural languages'
+  desc 'You should delete programming languages which are not necessary. "internal", "c", "plpgsql" and "sql" are allowed defaults.'
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM pg_language where lanname NOT IN ('internal', 'c', 'sql', 'plpgsql');") do
+    its('output') { should eq '0' }
+  end
+end
+
+control 'postgres-06' do
+  impact 1.0
   title 'Set a password for each user'
   desc 'It tests for usernames which does not set a password.'
   describe postgres_session(USER, PASSWORD).query('SELECT count(*) FROM pg_shadow WHERE passwd IS NULL;') do
@@ -156,21 +103,21 @@ control 'postgres-05' do
   end
 end
 
-control 'postgres-06' do
+control 'postgres-07' do
   impact 1.0
   title 'Use salted hash to store postgresql passwords'
   desc 'Store postgresql passwords in salted hash format (e.g. salted MD5).'
   case postgres.version
   when /^9/
     describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
-      its('output') { should match(/^md5\S*$/) }
+      its('output') { should match(/^md5\S*$/i) }
     end
     describe postgres_conf(POSTGRES_CONF_PATH) do
       its('password_encryption') { should eq 'on' }
     end
-  when /^10/
+  else
     describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
-      its('output') { should match(/^scram-sha-256\S*$/) }
+      its('output') { should match(/^scram-sha-256\S*$/i) }
     end
     describe postgres_conf(POSTGRES_CONF_PATH) do
       its('password_encryption') { should eq 'scram-sha-256' }
@@ -178,7 +125,7 @@ control 'postgres-06' do
   end
 end
 
-control 'postgres-07' do
+control 'postgres-08' do
   impact 1.0
   title 'Only the postgresql database administrator should have SUPERUSER, CREATEDB or CREATEROLE privileges.'
   desc 'Granting extensive privileges to ordinary users can cause various security problems, such as: intentional/ unintentional access, modification or destroying data'
@@ -187,22 +134,12 @@ control 'postgres-07' do
   end
 end
 
-control 'postgres-08' do
+control 'postgres-09' do
   impact 1.0
   title 'Only the DBA should have privileges on pg_catalog.pg_authid table.'
   desc 'In pg_catalog.pg_authid table there are stored credentials such as username and password. If hacker has access to the table, then he can extract these credentials.'
-  describe postgres_session(USER, PASSWORD).query('\dp pg_catalog.pg_authid') do
-    its('output') { should eq 'pg_catalog | pg_authid | table | postgres=arwdDxt/postgres |' }
-  end
-end
-
-control 'postgres-09' do
-  impact 1.0
-  title 'The PostgreSQL "data_directory" should be assigned exclusively to the database account (such as "postgres").'
-  desc 'If file permissions on data are not property defined, other users may read, modify or delete those files.'
-  find_command = 'find ' + POSTGRES_DATA.to_s + ' -user ' + USER + ' -group ' + USER + ' -perm /go=rwx'
-  describe command(find_command) do
-    its('stdout') { should eq '' }
+  describe postgres_session(USER, PASSWORD).query("SELECT grantee FROM information_schema.role_table_grants WHERE table_name='pg_authid' group by grantee;") do
+    its('output') { should eq 'postgres' }
   end
 end
 
@@ -253,10 +190,10 @@ end
 
 control 'postgres-11' do
   impact 1.0
-  title 'SSL is deactivated just for testing the chef-hardening-cookbook. It is recommended to activate ssl communication.'
+  title 'It is recommended to activate ssl communication.'
   desc 'The hardening-cookbook will delete the links from #var/lib/postgresql/%postgresql-version%/main/server.crt to etc/ssl/certs/ssl-cert-snakeoil.pem and #var/lib/postgresql/%postgresql-version%/main/server.key to etc/ssl/private/ssl-cert-snakeoil.key on Debian systems. This certificates are self-signed (see http://en.wikipedia.org/wiki/Snake_oil_%28cryptography%29) and therefore not trusted. You have to #provide our own trusted certificates for SSL.'
   describe postgres_conf(POSTGRES_CONF_PATH) do
-    its('ssl') { should eq 'off' }
+    its('ssl') { should eq 'on' }
   end
 end
 
@@ -271,28 +208,40 @@ end
 
 control 'postgres-13' do
   impact 1.0
-  title 'Require MD5 for ALL users, peers in pg_hba.conf'
-  desc 'Require MD5 for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
-  describe file(POSTGRES_HBA_CONF_FILE) do
-    its('content') { should match(/local\s.*?all\s.*?all\s.*?md5/) }
-    its('content') { should match(%r{host\s.*?all\s.*?all\s.*?127.0.0.1\/32\s.*?md5}) }
-    its('content') { should match(%r{host\s.*?all\s.*?all\s.*?::1\/128\s.*?md5}) }
-    its('content') { should_not match(/.*password/) }
-    its('content') { should_not match(/.*trust/) }
-    its('content') { should_not match(/.*crypt/) }
+  title 'Require peer auth_method for local users'
+  desc 'Require peer auth_method for local users.'
+  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type eq 'local' } do
+    its('auth_method') { should all eq 'peer' }
   end
 end
 
 control 'postgres-14' do
   impact 1.0
-  title 'We accept one peer and one ident for now (chef automation)'
-  desc 'We accept one peer and one ident for now (chef automation)'
-  describe command('cat ' + POSTGRES_HBA_CONF_FILE.to_s + ' | egrep \'peer|ident\' | wc -l') do
-    its('stdout') { should match(/^[2|1]/) }
+  title 'Require only trusted authentication mathods in pg_hba.conf'
+  desc 'Require trusted auth method for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
+  case postgres.version
+  when /^9/
+    describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == 'hostssl' } do
+      its('auth_method') { should all eq 'md5' }
+    end
+  else
+    describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == 'hostssl' } do
+      its('auth_method') { should all eq 'scram-sha-256' }
+    end
   end
 end
 
 control 'postgres-15' do
+  impact 1.0
+  title 'Require SSL communication between all peers'
+  desc 'Do not allow communication without SSL among all peers.'
+  describe file(POSTGRES_HBA_CONF_FILE) do
+    its('content') { should_not match(/^host .*/) }
+    its('content') { should_not match(/^hostnossl .*/) }
+  end
+end
+
+control 'postgres-16' do
   impact 1.0
   title 'Enable logging functions'
   desc 'Logging functions must be turned on and properly configured according / compliant to local law.'
@@ -304,5 +253,64 @@ control 'postgres-15' do
     its('log_hostname') { should eq 'on' }
     its('log_directory') { should eq 'pg_log' }
     its('log_line_prefix') { should eq '%t %u %d %h' }
+  end
+end
+
+control 'postgres-17' do
+  impact 1.0
+  title 'Grants should not be assigned to public'
+  desc 'Grants should not be assigned to public to avoid issues with tenant separations.'
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM information_schema.table_privileges WHERE grantee = 'PUBLIC' AND table_schema NOT LIKE 'pg_catalog' AND table_schema NOT LIKE 'information_schema';") do
+    its('output') { should eq '0' }
+  end
+end
+
+control 'postgres-18' do
+  impact 1.0
+  title 'Grants should not be assigned with grant option privilege'
+  desc 'Grants should not be assigned with grant option exept postgresql admin superuser.'
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(is_grantable) FROM information_schema.table_privileges WHERE grantee NOT LIKE 'postgres' AND is_grantable = 'YES';") do
+    its('output') { should eq '0' }
+  end
+end
+
+control 'postgres-19' do
+  impact 1.0
+  title 'Restrictive usage of SQL functions with security definer'
+  desc 'Avoid SQL functions with security definer.'
+  describe postgres_session(USER, PASSWORD).query("SELECT COUNT(*) FROM pg_proc JOIN pg_namespace ON pg_proc.pronamespace=pg_namespace.oid JOIN pg_user ON pg_proc.proowner=pg_user.usesysid WHERE prosecdef='t';") do
+    its('output') { should eq '0' }
+  end
+end
+
+control 'postgres-20' do
+  impact 1.0
+  title 'The PostgreSQL data and log directory should be assigned exclusively to the database account (such as "postgres").'
+  desc 'The PostgreSQL data and log directory should be assigned exclusively to the database account (such as "postgres").'
+  describe file(POSTGRES_DATA) do
+    it { should be_directory }
+    it { should be_owned_by USER }
+    it { should be_readable.by('owner') }
+    it { should_not be_readable.by('group') }
+    it { should_not be_readable.by('other') }
+    it { should be_writable.by('owner') }
+    it { should_not be_writable.by('group') }
+    it { should_not be_writable.by('other') }
+    it { should be_executable.by('owner') }
+    it { should_not be_executable.by('group') }
+    it { should_not be_executable.by('other') }
+  end
+  describe file(POSTGRES_LOG_DIR) do
+    it { should be_directory }
+    it { should be_owned_by USER }
+    it { should be_readable.by('owner') }
+    it { should_not be_readable.by('group') }
+    it { should_not be_readable.by('other') }
+    it { should be_writable.by('owner') }
+    it { should_not be_writable.by('group') }
+    it { should_not be_writable.by('other') }
+    it { should be_executable.by('owner') }
+    it { should_not be_executable.by('group') }
+    it { should_not be_executable.by('other') }
   end
 end
