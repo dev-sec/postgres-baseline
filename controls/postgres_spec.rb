@@ -23,13 +23,47 @@
 title 'PostgreSQL Server Configuration'
 
 # inputs
-USER = input('user', value: 'postgres')
-PASSWORD = input('password', value: 'iloverandompasswordsbutthiswilldo')
-POSTGRES_DATA = input('postgres_data', value: postgres.data_dir)
-POSTGRES_CONF_DIR = input('postgres_conf_dir', value: postgres.conf_dir)
-POSTGRES_CONF_PATH = input('postgres_conf_path', value: File.join(POSTGRES_CONF_DIR.to_s, 'postgresql.conf'))
-POSTGRES_HBA_CONF_FILE = input('postgres_hba_conf_file', value: File.join(POSTGRES_CONF_DIR.to_s, 'pg_hba.conf'))
-POSTGRES_LOG_DIR = input('postgres_log_dir', value: '/var/log/postgresql')
+USER = input(
+  'user',
+  description: 'define the postgresql user to access the database',
+  value: 'postgres'
+)
+
+PASSWORD = input(
+  'password',
+  description: 'define the postgresql password to access the database',
+  value: 'iloverandompasswordsbutthiswilldo'
+)
+
+POSTGRES_DATA = input(
+  'postgres_data',
+  description: 'define the postgresql data directory',
+  value: postgres.data_dir
+)
+
+POSTGRES_CONF_DIR = input(
+  'postgres_conf_dir',
+  description: 'define the postgresql configuration directory',
+  value: postgres.conf_dir
+)
+
+POSTGRES_CONF_PATH = input(
+  'postgres_conf_path',
+  description: 'define path for the postgresql configuration file',
+  value: File.join(POSTGRES_CONF_DIR.to_s, 'postgresql.conf')
+)
+
+POSTGRES_HBA_CONF_FILE = input(
+  'postgres_hba_conf_file',
+  description: 'define path for the postgresql configuration file',
+  value: File.join(POSTGRES_CONF_DIR.to_s, 'pg_hba.conf')
+)
+
+POSTGRES_LOG_DIR = input(
+  'postgres_log_dir',
+  description: 'define path for the postgresql log file',
+  value: '/var/log/postgresql'
+)
 
 only_if do
   command('psql').exist?
