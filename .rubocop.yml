@@ -1,23 +1,22 @@
 ---
 AllCops:
-  NewCops: enable
   Exclude:
   - vendor/**/*
-Style/Encoding:
+Documentation:
   Enabled: false
-Style/Documentation:
-  Enabled: false
-Layout/ParameterAlignment:
+ParameterAlignment:
   Enabled: true
-Style/HashSyntax:
+HashSyntax:
   Enabled: true
-Layout/LineLength:
+LineLength:
   Enabled: false
-Layout/EmptyLinesAroundBlockBody:
+EmptyLinesAroundBlockBody:
   Enabled: false
-Metrics/MethodLength:
+Style/IfUnlessModifier:
+  Enabled: false
+MethodLength:
   Max: 40
-Style/NumericLiterals:
+NumericLiterals:
   MinDigits: 10
 Metrics/BlockLength:
   Max: 42
@@ -27,6 +26,7 @@ Metrics/PerceivedComplexity:
   Max: 10
 Metrics/AbcSize:
   Max: 30
-# https://github.com/rubocop-hq/rubocop/issues/4198
+# Lint/AmbiguousBlockAssociation is incompatible with RSpec
+# https://github.com/rubocop-hq/rubocop/issues/4222
 Lint/AmbiguousBlockAssociation:
   Enabled: false
