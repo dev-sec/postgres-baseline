@@ -243,7 +243,7 @@ control 'postgres-13' do
   impact 1.0
   title 'Require peer auth_method for local users'
   desc 'Require peer auth_method for local users.'
-  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type eq 'local' } do
+  describe postgres_hba_conf(POSTGRES_HBA_CONF_FILE).where { type == 'local' } do
     its('auth_method') { should all eq 'peer' }
   end
 end
