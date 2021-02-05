@@ -99,12 +99,12 @@ control 'postgres-03' do
   desc 'Only one postgresql database instance must be running on an operating system instance (both physical HW or virtualized).'
   case os[:name]
   when 'redhat', 'centos', 'oracle', 'fedora'
-    describe command('ps aux | awk /\'bin\/postmaster\'/ | wc -l') do
-      its('stdout') { should include '1' }
+    describe processes('bin/postmaster') do
+      its('entries.length') { should eq 1 }
     end
   when 'debian', 'ubuntu'
-    describe command('ps aux | awk /\'bin\/postgres\'/ | wc -l') do
-      its('stdout') { should include '1' }
+    describe processes('bin/postgres') do
+      its('entries.length') { should eq 1 }
     end
   end
 end
