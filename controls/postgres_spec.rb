@@ -151,7 +151,7 @@ control 'postgres-07' do
     end
   else
     describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
-      its('output') { should match(/^scram-sha-256\S*$/i) }
+      its('output') { should match /^scram-sha-256\S*$/i }
     end
     describe postgres_conf(POSTGRES_CONF_PATH) do
       its('password_encryption') { should eq 'scram-sha-256' }
