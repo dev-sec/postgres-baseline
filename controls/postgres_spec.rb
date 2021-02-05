@@ -270,8 +270,8 @@ control 'postgres-15' do
   title 'Require SSL communication between all peers'
   desc 'Do not allow communication without SSL among all peers.'
   describe file(POSTGRES_HBA_CONF_FILE) do
-    its('content') { should_not match(/^host .*/) }
-    its('content') { should_not match(/^hostnossl .*/) }
+    its('content') { should_not match /^host .*/ }
+    its('content') { should_not match /^hostnossl .*/ }
   end
 end
 
