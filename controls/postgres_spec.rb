@@ -144,7 +144,7 @@ control 'postgres-07' do
   case postgres.version
   when /^9/
     describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
-      its('output') { should match(/^md5\S*$/i) }
+      its('output') { should match /^md5\S*$/i }
     end
     describe postgres_conf(POSTGRES_CONF_PATH) do
       its('password_encryption') { should eq 'on' }
