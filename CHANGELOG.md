@@ -1,8 +1,12 @@
 # Changelog
 
-## [2.0.8](https://github.com/dev-sec/postgres-baseline/tree/2.0.8) (2021-01-26)
+## [3.0.0](https://github.com/dev-sec/postgres-baseline/tree/3.0.0) (2021-02-05)
 
-[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.7...2.0.8)
+[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.7...3.0.0)
+
+**Breaking changes:**
+
+- Update PostgreSQL Baseline [\#39](https://github.com/dev-sec/postgres-baseline/pull/39) ([FLiPp3r90](https://github.com/FLiPp3r90))
 
 **Merged pull requests:**
 
