@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.0.1](https://github.com/dev-sec/postgres-baseline/tree/3.0.1) (2021-03-25)
+
+[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.0.0...3.0.1)
+
+**Implemented enhancements:**
+
+- Switch back to simple InSpec service description [\#17](https://github.com/dev-sec/postgres-baseline/issues/17)
+
+**Merged pull requests:**
+
+- update release action [\#41](https://github.com/dev-sec/postgres-baseline/pull/41) ([schurzi](https://github.com/schurzi))
+- add dependency to chef-config for CI [\#40](https://github.com/dev-sec/postgres-baseline/pull/40) ([schurzi](https://github.com/schurzi))
+
 ## [3.0.0](https://github.com/dev-sec/postgres-baseline/tree/3.0.0) (2021-02-05)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.7...3.0.0)
@@ -71,10 +84,6 @@
 ## [2.0.2](https://github.com/dev-sec/postgres-baseline/tree/2.0.2) (2017-06-27)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.1...2.0.2)
-
-**Merged pull requests:**
-
-- inspec check fix [\#21](https://github.com/dev-sec/postgres-baseline/pull/21) ([chris-rock](https://github.com/chris-rock))
 
 ## [2.0.1](https://github.com/dev-sec/postgres-baseline/tree/2.0.1) (2017-05-08)
 
