@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.1](https://github.com/dev-sec/postgres-baseline/tree/3.0.1) (2021-03-25)
+## [3.0.1](https://github.com/dev-sec/postgres-baseline/tree/3.0.1) (2021-04-24)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.0.0...3.0.1)
 
@@ -10,6 +10,7 @@
 
 **Merged pull requests:**
 
+- fix rubocop error for Rakefile [\#42](https://github.com/dev-sec/postgres-baseline/pull/42) ([schurzi](https://github.com/schurzi))
 - update release action [\#41](https://github.com/dev-sec/postgres-baseline/pull/41) ([schurzi](https://github.com/schurzi))
 - add dependency to chef-config for CI [\#40](https://github.com/dev-sec/postgres-baseline/pull/40) ([schurzi](https://github.com/schurzi))
 
@@ -85,6 +86,10 @@
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.1...2.0.2)
 
+**Merged pull requests:**
+
+- inspec check fix [\#21](https://github.com/dev-sec/postgres-baseline/pull/21) ([chris-rock](https://github.com/chris-rock))
+
 ## [2.0.1](https://github.com/dev-sec/postgres-baseline/tree/2.0.1) (2017-05-08)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/2.0.0...2.0.1)
@@ -95,7 +100,6 @@
 - restrict ruby testing to version 2.3.3 and update gemfile [\#18](https://github.com/dev-sec/postgres-baseline/pull/18) ([atomic111](https://github.com/atomic111))
 - adjust the service for each os type and correct the control 10 [\#16](https://github.com/dev-sec/postgres-baseline/pull/16) ([atomic111](https://github.com/atomic111))
 - remove the sudo command and remove duplicate control [\#15](https://github.com/dev-sec/postgres-baseline/pull/15) ([atomic111](https://github.com/atomic111))
-- 2.0.0 [\#14](https://github.com/dev-sec/postgres-baseline/pull/14) ([chris-rock](https://github.com/chris-rock))
 
 ## [2.0.0](https://github.com/dev-sec/postgres-baseline/tree/2.0.0) (2017-01-05)
 
@@ -103,6 +107,7 @@
 
 **Merged pull requests:**
 
+- 2.0.0 [\#14](https://github.com/dev-sec/postgres-baseline/pull/14) ([chris-rock](https://github.com/chris-rock))
 - Migrate to InSpec [\#13](https://github.com/dev-sec/postgres-baseline/pull/13) ([atomic111](https://github.com/atomic111))
 
 ## [1.1.0](https://github.com/dev-sec/postgres-baseline/tree/1.1.0) (2015-10-15)
