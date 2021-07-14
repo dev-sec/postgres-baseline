@@ -197,7 +197,7 @@ control 'postgres-10' do
     it { should be_file }
     it { should be_owned_by USER }
     it { should be_readable.by('owner') }
-    it { should_not be_readable.by('group') }
+    it { should be_readable.by('group') }
     it { should_not be_readable.by('other') }
     it { should be_writable.by('owner') }
     it { should_not be_writable.by('group') }
@@ -210,7 +210,7 @@ control 'postgres-10' do
     it { should be_file }
     it { should be_owned_by USER }
     it { should be_readable.by('owner') }
-    it { should_not be_readable.by('group') }
+    it { should be_readable.by('group') }
     it { should_not be_readable.by('other') }
     it { should be_writable.by('owner') }
     it { should_not be_writable.by('group') }
