@@ -284,7 +284,7 @@ control 'postgres-16' do
     its('log_disconnections') { should eq 'on' }
     its('log_duration') { should eq 'on' }
     its('log_hostname') { should eq 'on' }
-    its('log_directory') { should eq 'pg_log' }
+    its('log_directory') { should_not eq ' ' }
     its('log_line_prefix') { should eq '%t %u %d %h' }
   end
 end
