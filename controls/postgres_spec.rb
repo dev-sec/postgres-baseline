@@ -279,14 +279,26 @@ control 'postgres-16' do
   impact 1.0
   title 'Enable logging functions'
   desc 'Logging functions must be turned on and properly configured according / compliant to local law.'
-  describe postgres_conf(POSTGRES_CONF_PATH) do
-    its('logging_collector') { should eq 'on' }
-    its('log_connections') { should eq 'on' }
-    its('log_disconnections') { should eq 'on' }
-    its('log_duration') { should eq 'on' }
-    its('log_hostname') { should eq 'on' }
-    its('log_directory') { should_not eq ' ' }
-    its('log_line_prefix') { should eq '%t %u %d %h' }
+  describe postgres_session(USER, PASSWORD).query('SHOW logging_collector;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_connections;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_disconnections;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_duration;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_hostname;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_directory;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_line_prefix;') do
+    its('output') { should eq 'on' }
   end
 end
 
