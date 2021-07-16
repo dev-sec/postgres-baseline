@@ -226,8 +226,8 @@ control 'postgres-11' do
   impact 1.0
   title 'It is recommended to activate ssl communication.'
   desc 'The hardening-cookbook will delete the links from #var/lib/postgresql/%postgresql-version%/main/server.crt to etc/ssl/certs/ssl-cert-snakeoil.pem and #var/lib/postgresql/%postgresql-version%/main/server.key to etc/ssl/private/ssl-cert-snakeoil.key on Debian systems. This certificates are self-signed (see http://en.wikipedia.org/wiki/Snake_oil_%28cryptography%29) and therefore not trusted. You have to #provide our own trusted certificates for SSL.'
-  describe postgres_conf(POSTGRES_CONF_PATH) do
-    its('ssl') { should eq 'on' }
+  describe postgres_session(USER, PASSWORD).query('SHOW ssl;') do
+    its('output') { should eq 'on' }
   end
 end
 
