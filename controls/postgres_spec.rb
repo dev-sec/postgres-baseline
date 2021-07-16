@@ -298,7 +298,7 @@ control 'postgres-16' do
     its('output') { should eq '/var/log/postgresql' }
   end
   describe postgres_session(USER, PASSWORD).query('SHOW log_line_prefix;') do
-    its('output') { should eq 'on' }
+    its('output') { should eq '%t %u %d %h' }
   end
 end
 
