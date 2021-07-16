@@ -235,8 +235,8 @@ control 'postgres-12' do
   impact 1.0
   title 'Use strong chiphers for ssl communication'
   desc 'The following categories of SSL Ciphers must not be used: ADH, LOW, EXP and MD5. A very good description for secure postgres installation / configuration can be found at: https://bettercrypto.org'
-  describe postgres_conf(POSTGRES_CONF_PATH) do
-    its('ssl_ciphers') { should eq 'ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH' }
+  describe postgres_session(USER, PASSWORD).query('SHOW ssl_ciphers;') do
+    its('output') { should eq 'ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH' }
   end
 end
 
