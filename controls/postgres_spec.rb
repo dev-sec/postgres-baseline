@@ -145,14 +145,14 @@ control 'postgres-07' do
     describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
       its('output') { should match /^md5\S*$/i }
     end
-    describe postgres_session(USER, PASSWORD).query('SHOW password_encryption;') do
+    describe postgres_session(USER, PASSWORD).query("SELECT setting FROM pg_settings WHERE name = 'password_encryption';") do
       its('password_encryption') { should eq 'on' }
     end
   else
     describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
       its('output') { should match /^scram-sha-256\S*$/i }
     end
-    describe postgres_session(USER, PASSWORD).query('SHOW password_encryption;') do
+    describe postgres_session(USER, PASSWORD).query("SELECT setting FROM pg_settings WHERE name = 'password_encryption';") do
       its('password_encryption') { should eq 'scram-sha-256' }
     end
   end
