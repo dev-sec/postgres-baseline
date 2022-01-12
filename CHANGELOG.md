@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.1](https://github.com/dev-sec/postgres-baseline/tree/3.0.1) (2021-04-24)
+## [3.0.1](https://github.com/dev-sec/postgres-baseline/tree/3.0.1) (2022-01-12)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.0.0...3.0.1)
 
@@ -10,6 +10,7 @@
 
 **Merged pull requests:**
 
+- use input instead of attribute [\#45](https://github.com/dev-sec/postgres-baseline/pull/45) ([micheelengronne](https://github.com/micheelengronne))
 - fix rubocop error for Rakefile [\#42](https://github.com/dev-sec/postgres-baseline/pull/42) ([schurzi](https://github.com/schurzi))
 - update release action [\#41](https://github.com/dev-sec/postgres-baseline/pull/41) ([schurzi](https://github.com/schurzi))
 - add dependency to chef-config for CI [\#40](https://github.com/dev-sec/postgres-baseline/pull/40) ([schurzi](https://github.com/schurzi))
