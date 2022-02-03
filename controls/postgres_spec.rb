@@ -198,7 +198,6 @@ control 'postgres-10' do
     it { should be_owned_by USER }
     it { should be_readable.by('owner') }
     it { should be_readable.by('group') }
-    # https://github.com/geerlingguy/ansible-role-postgresql/pull/187
     it { should_not be_readable.by('other') }
     it { should be_writable.by('owner') }
     it { should_not be_writable.by('group') }
