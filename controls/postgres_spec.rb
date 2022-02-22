@@ -145,15 +145,15 @@ control 'postgres-07' do
     describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
       its('output') { should match /^md5\S*$/i }
     end
-    describe postgres_conf(POSTGRES_CONF_PATH) do
-      its('password_encryption') { should eq 'on' }
+    describe postgres_session(USER, PASSWORD).query('SHOW password_encryption;') do
+      its('output') { should eq 'on' }
     end
   else
     describe postgres_session(USER, PASSWORD).query('SELECT passwd FROM pg_shadow;') do
       its('output') { should match /^scram-sha-256\S*$/i }
     end
-    describe postgres_conf(POSTGRES_CONF_PATH) do
-      its('password_encryption') { should eq 'scram-sha-256' }
+    describe postgres_session(USER, PASSWORD).query('SHOW password_encryption;') do
+      its('output') { should eq 'scram-sha-256' }
     end
   end
 end
@@ -197,7 +197,7 @@ control 'postgres-10' do
     it { should be_file }
     it { should be_owned_by USER }
     it { should be_readable.by('owner') }
-    it { should_not be_readable.by('group') }
+    it { should be_readable.by('group') }
     it { should_not be_readable.by('other') }
     it { should be_writable.by('owner') }
     it { should_not be_writable.by('group') }
@@ -225,8 +225,8 @@ control 'postgres-11' do
   impact 1.0
   title 'It is recommended to activate ssl communication.'
   desc 'The hardening-cookbook will delete the links from #var/lib/postgresql/%postgresql-version%/main/server.crt to etc/ssl/certs/ssl-cert-snakeoil.pem and #var/lib/postgresql/%postgresql-version%/main/server.key to etc/ssl/private/ssl-cert-snakeoil.key on Debian systems. This certificates are self-signed (see http://en.wikipedia.org/wiki/Snake_oil_%28cryptography%29) and therefore not trusted. You have to #provide our own trusted certificates for SSL.'
-  describe postgres_conf(POSTGRES_CONF_PATH) do
-    its('ssl') { should eq 'on' }
+  describe postgres_session(USER, PASSWORD).query('SHOW ssl;') do
+    its('output') { should eq 'on' }
   end
 end
 
@@ -234,8 +234,8 @@ control 'postgres-12' do
   impact 1.0
   title 'Use strong chiphers for ssl communication'
   desc 'The following categories of SSL Ciphers must not be used: ADH, LOW, EXP and MD5. A very good description for secure postgres installation / configuration can be found at: https://bettercrypto.org'
-  describe postgres_conf(POSTGRES_CONF_PATH) do
-    its('ssl_ciphers') { should eq 'ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH' }
+  describe postgres_session(USER, PASSWORD).query('SHOW ssl_ciphers;') do
+    its('output') { should eq 'ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH' }
   end
 end
 
@@ -278,14 +278,26 @@ control 'postgres-16' do
   impact 1.0
   title 'Enable logging functions'
   desc 'Logging functions must be turned on and properly configured according / compliant to local law.'
-  describe postgres_conf(POSTGRES_CONF_PATH) do
-    its('logging_collector') { should eq 'on' }
-    its('log_connections') { should eq 'on' }
-    its('log_disconnections') { should eq 'on' }
-    its('log_duration') { should eq 'on' }
-    its('log_hostname') { should eq 'on' }
-    its('log_directory') { should eq 'pg_log' }
-    its('log_line_prefix') { should eq '%t %u %d %h' }
+  describe postgres_session(USER, PASSWORD).query('SHOW logging_collector;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_connections;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_disconnections;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_duration;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_hostname;') do
+    its('output') { should eq 'on' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_directory;') do
+    its('output') { should_not eq 'log' }
+  end
+  describe postgres_session(USER, PASSWORD).query('SHOW log_line_prefix;') do
+    its('output') { should eq '%t %u %d %h' }
   end
 end
 
