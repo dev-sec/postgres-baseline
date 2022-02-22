@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0.2](https://github.com/dev-sec/postgres-baseline/tree/3.0.2) (2022-02-22)
+
+[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.0.1...3.0.2)
+
+**Implemented enhancements:**
+
+- Verify controls in running configuration [\#44](https://github.com/dev-sec/postgres-baseline/pull/44) ([FLiPp3r90](https://github.com/FLiPp3r90))
+
 ## [3.0.1](https://github.com/dev-sec/postgres-baseline/tree/3.0.1) (2022-01-12)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.0.0...3.0.1)
