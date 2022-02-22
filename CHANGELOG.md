@@ -1,12 +1,16 @@
 # Changelog
 
-## [3.0.2](https://github.com/dev-sec/postgres-baseline/tree/3.0.2) (2022-02-22)
+## [3.1.0](https://github.com/dev-sec/postgres-baseline/tree/3.1.0) (2022-02-22)
 
-[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.0.1...3.0.2)
+[Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.0.1...3.1.0)
 
 **Implemented enhancements:**
 
 - Verify controls in running configuration [\#44](https://github.com/dev-sec/postgres-baseline/pull/44) ([FLiPp3r90](https://github.com/FLiPp3r90))
+
+**Merged pull requests:**
+
+- Cookstyle Bot Auto Corrections with Cookstyle 7.14.0 [\#43](https://github.com/dev-sec/postgres-baseline/pull/43) ([cookstyle[bot]](https://github.com/apps/cookstyle))
 
 ## [3.0.1](https://github.com/dev-sec/postgres-baseline/tree/3.0.1) (2022-01-12)
 
