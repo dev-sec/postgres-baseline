@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2022-03-18)
+## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2022-09-29)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.1.0...3.1.1)
 
