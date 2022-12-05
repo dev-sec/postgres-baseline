@@ -27,7 +27,7 @@ $ inspec exec https://github.com/dev-sec/postgres-baseline
 - Author:: Christoph Hartmann <chris@lollyrock.com>
 - Author:: Edmund Haselwanter <me@ehaselwanter.com>
 
-- Copyright 2014-2019, The DevSec Hardening Framework Team
+- Copyright 2014-2022, The DevSec Hardening Framework Team
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
