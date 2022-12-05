@@ -1,8 +1,12 @@
 # Changelog
 
-## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2022-09-29)
+## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2022-12-05)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.1.0...3.1.1)
+
+**Implemented enhancements:**
+
+- use centralised issue templates and workflows [\#48](https://github.com/dev-sec/postgres-baseline/pull/48) ([schurzi](https://github.com/schurzi))
 
 **Merged pull requests:**
 
