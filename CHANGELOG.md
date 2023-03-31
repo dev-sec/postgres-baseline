@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2022-12-05)
+## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2023-03-31)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.1.0...3.1.1)
 
@@ -10,6 +10,7 @@
 
 **Merged pull requests:**
 
+- Configure Renovate [\#49](https://github.com/dev-sec/postgres-baseline/pull/49) ([renovate[bot]](https://github.com/apps/renovate))
 - Change linting to Cookstyle [\#46](https://github.com/dev-sec/postgres-baseline/pull/46) ([schurzi](https://github.com/schurzi))
 
 ## [3.1.0](https://github.com/dev-sec/postgres-baseline/tree/3.1.0) (2022-02-22)
