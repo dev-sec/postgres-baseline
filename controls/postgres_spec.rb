@@ -250,7 +250,7 @@ end
 
 control 'postgres-14' do
   impact 1.0
-  title 'Require only trusted authentication mathods in pg_hba.conf'
+  title 'Require only trusted authentication methods in pg_hba.conf'
   desc 'Require trusted auth method for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
   case postgres.version
   when /^9/

@@ -142,7 +142,7 @@
 
 **Merged pull requests:**
 
-- install server and apply hardening in seperate steps [\#5](https://github.com/dev-sec/postgres-baseline/pull/5) ([chris-rock](https://github.com/chris-rock))
+- install server and apply hardening in separate steps [\#5](https://github.com/dev-sec/postgres-baseline/pull/5) ([chris-rock](https://github.com/chris-rock))
 - bugfix: lint error [\#4](https://github.com/dev-sec/postgres-baseline/pull/4) ([chris-rock](https://github.com/chris-rock))
 - add ssl test back in for 'off' setting [\#3](https://github.com/dev-sec/postgres-baseline/pull/3) ([ehaselwanter](https://github.com/ehaselwanter))
 
