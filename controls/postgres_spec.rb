@@ -82,7 +82,7 @@ end
 control 'postgres-02' do
   impact 1.0
   title 'Use stable postgresql version'
-  desc 'Use only community or commercially supported version of the PostgreSQL software (https://www.postgresql.org/support/versioning/). Do not use RC, DEVEL oder BETA versions in a production environment.'
+  desc 'Use only community or commercially supported version of the PostgreSQL software (https://www.postgresql.org/support/versioning/). Do not use RC, DEVEL or BETA versions in a production environment.'
   describe command('psql -V') do
     its('stdout') { should match /^psql\s\(PostgreSQL\)\s(9.6|10|11|12|13).*/ }
   end
@@ -250,7 +250,7 @@ end
 
 control 'postgres-14' do
   impact 1.0
-  title 'Require only trusted authentication mathods in pg_hba.conf'
+  title 'Require only trusted authentication methods in pg_hba.conf'
   desc 'Require trusted auth method for ALL users, peers in pg_hba.conf and do not allow untrusted authentication methods.'
   case postgres.version
   when /^9/
@@ -313,7 +313,7 @@ end
 control 'postgres-18' do
   impact 1.0
   title 'Grants should not be assigned with grant option privilege'
-  desc 'Grants should not be assigned with grant option exept postgresql admin superuser.'
+  desc 'Grants should not be assigned with grant option except postgresql admin superuser.'
   describe postgres_session(USER, PASSWORD).query("SELECT COUNT(is_grantable) FROM information_schema.table_privileges WHERE grantee NOT LIKE 'postgres' AND is_grantable = 'YES';") do
     its('output') { should eq '0' }
   end
