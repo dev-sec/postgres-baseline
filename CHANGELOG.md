@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2023-05-02)
+## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2023-11-19)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.1.0...3.1.1)
 
@@ -10,6 +10,7 @@
 
 **Merged pull requests:**
 
+- ensure compatibility with new inspec version [\#51](https://github.com/dev-sec/postgres-baseline/pull/51) ([schurzi](https://github.com/schurzi))
 - add spellchecking with codespell [\#50](https://github.com/dev-sec/postgres-baseline/pull/50) ([schurzi](https://github.com/schurzi))
 - Configure Renovate [\#49](https://github.com/dev-sec/postgres-baseline/pull/49) ([renovate[bot]](https://github.com/apps/renovate))
 - Change linting to Cookstyle [\#46](https://github.com/dev-sec/postgres-baseline/pull/46) ([schurzi](https://github.com/schurzi))
