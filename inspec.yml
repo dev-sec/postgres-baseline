@@ -10,3 +10,18 @@ inspec_version: '>= 4.6.3'
 version: 3.1.1
 supports:
     - os-family: unix
+inputs:
+    - name: user
+      description: define the postgresql user to access the database
+    - name: password
+      description: define the postgresql password to access the database
+    - name: postgres_data
+      description: define the postgresql data directory
+    - name: postgres_conf_dir
+      description: define the postgresql configuration directory
+    - name: postgres_conf_path
+      description: define path for the postgresql configuration file
+    - name: postgres_hba_conf_file
+      description: define path for the postgresql configuration file
+    - name: postgres_log_dir
+      description: define path for the postgresql log file
