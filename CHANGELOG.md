@@ -1,15 +1,17 @@
 # Changelog
 
-## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2023-11-19)
+## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2023-12-07)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.1.0...3.1.1)
 
 **Implemented enhancements:**
 
+- Update Supported Versions [\#52](https://github.com/dev-sec/postgres-baseline/issues/52)
 - use centralised issue templates and workflows [\#48](https://github.com/dev-sec/postgres-baseline/pull/48) ([schurzi](https://github.com/schurzi))
 
 **Merged pull requests:**
 
+- Fix \#52: Update supported versions [\#53](https://github.com/dev-sec/postgres-baseline/pull/53) ([professormahi](https://github.com/professormahi))
 - ensure compatibility with new inspec version [\#51](https://github.com/dev-sec/postgres-baseline/pull/51) ([schurzi](https://github.com/schurzi))
 - add spellchecking with codespell [\#50](https://github.com/dev-sec/postgres-baseline/pull/50) ([schurzi](https://github.com/schurzi))
 - Configure Renovate [\#49](https://github.com/dev-sec/postgres-baseline/pull/49) ([renovate[bot]](https://github.com/apps/renovate))
@@ -30,10 +32,6 @@
 ## [3.0.1](https://github.com/dev-sec/postgres-baseline/tree/3.0.1) (2022-01-12)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.0.0...3.0.1)
-
-**Implemented enhancements:**
-
-- Switch back to simple InSpec service description [\#17](https://github.com/dev-sec/postgres-baseline/issues/17)
 
 **Merged pull requests:**
 
