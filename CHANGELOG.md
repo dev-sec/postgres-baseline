@@ -1,16 +1,18 @@
 # Changelog
 
-## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2023-12-07)
+## [3.1.1](https://github.com/dev-sec/postgres-baseline/tree/3.1.1) (2023-12-08)
 
 [Full Changelog](https://github.com/dev-sec/postgres-baseline/compare/3.1.0...3.1.1)
 
 **Implemented enhancements:**
 
 - Update Supported Versions [\#52](https://github.com/dev-sec/postgres-baseline/issues/52)
+- Switch back to simple InSpec service description [\#17](https://github.com/dev-sec/postgres-baseline/issues/17)
 - use centralised issue templates and workflows [\#48](https://github.com/dev-sec/postgres-baseline/pull/48) ([schurzi](https://github.com/schurzi))
 
 **Merged pull requests:**
 
+- Remove control for running Database [\#54](https://github.com/dev-sec/postgres-baseline/pull/54) ([professormahi](https://github.com/professormahi))
 - Fix \#52: Update supported versions [\#53](https://github.com/dev-sec/postgres-baseline/pull/53) ([professormahi](https://github.com/professormahi))
 - ensure compatibility with new inspec version [\#51](https://github.com/dev-sec/postgres-baseline/pull/51) ([schurzi](https://github.com/schurzi))
 - add spellchecking with codespell [\#50](https://github.com/dev-sec/postgres-baseline/pull/50) ([schurzi](https://github.com/schurzi))
