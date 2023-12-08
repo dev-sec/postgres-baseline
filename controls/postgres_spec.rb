@@ -38,7 +38,7 @@ control 'postgres-01' do
   impact 1.0
   title 'Postgresql should be running'
   desc 'Postgresql should be running.'
-  if os[:name] == "ubuntu"
+  if os[:name] == 'ubuntu'
     describe command('/etc/init.d/postgresql status') do
       its('stdout') { should include 'active' }
     end
