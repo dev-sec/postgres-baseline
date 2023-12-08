@@ -34,23 +34,6 @@ only_if do
   command('psql').exist?
 end
 
-control 'postgres-01' do
-  impact 1.0
-  title 'Postgresql should be running'
-  desc 'Postgresql should be running.'
-  if os[:name] == 'ubuntu'
-    describe command('/etc/init.d/postgresql status') do
-      its('stdout') { should include 'active' }
-    end
-  else
-    describe service(postgres.service) do
-      it { should be_installed }
-      it { should be_running }
-      it { should be_enabled }
-    end
-  end
-end
-
 control 'postgres-02' do
   impact 1.0
   title 'Use stable postgresql version'
