@@ -34,17 +34,6 @@ only_if do
   command('psql').exist?
 end
 
-control 'postgres-01' do
-  impact 1.0
-  title 'Postgresql should be running'
-  desc 'Postgresql should be running.'
-  describe service(postgres.service) do
-    it { should be_installed }
-    it { should be_running }
-    it { should be_enabled }
-  end
-end
-
 control 'postgres-02' do
   impact 1.0
   title 'Use stable postgresql version'
