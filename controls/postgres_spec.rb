@@ -39,7 +39,7 @@ control 'postgres-02' do
   title 'Use stable postgresql version'
   desc 'Use only community or commercially supported version of the PostgreSQL software (https://www.postgresql.org/support/versioning/). Do not use RC, DEVEL or BETA versions in a production environment.'
   describe command('psql -V') do
-    its('stdout') { should match /^psql\s\(PostgreSQL\)\s(12|13|14|15|16).*/ }
+    its('stdout') { should match /^psql\s\(PostgreSQL\)\s(13|14|15|16|17).*/ }
   end
   describe command('psql -V') do
     its('stdout') { should_not match /RC/ }
